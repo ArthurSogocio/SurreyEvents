@@ -20,6 +20,7 @@ if(mysqli_connect_errno()) {
 }
 
 //Creates table for "users" if does not exist.
+/*
 if ($result = $db->query("SHOW TABLES LIKE 'users'")) {
     if($result->num_rows < 1) $db->query("CREATE TABLE users (
 	    id int(11) NOT NULL AUTO_INCREMENT,
@@ -46,6 +47,8 @@ if ($result = $db->query("SHOW TABLES LIKE 'watchlistitems'")) {
 else {
     die("Something went wrong with the database. Please try again later.");
 }
+
+ */
 
 //Starts the session, which is present in every page.
 session_start();
