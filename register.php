@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->close();
         $db->close();
 
-        if (isset($_SESSION['callback_url'])) { //If registering after attempting to access or add to watchlist, redirect using http and the callback_url stored in the session. Unsets after setting url variable for the header statement to use.
+        if (isset($_SESSION['callback_url'])) { //If registering after attempting to access or add to bookmarks, redirect using http and the callback_url stored in the session. Unsets after setting url variable for the header statement to use.
             $url = "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['callback_url'];
             unset($_SESSION['callback_url']);
             header('Location: ' . $url);
