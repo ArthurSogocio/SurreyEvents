@@ -1,0 +1,53 @@
+.anchor-button {
+	background-color: orange;
+	color: white;
+	text-decoration: none;
+	padding: 5px;
+}
+.details-table {
+	width: 100%;
+}
+.details-table td {
+	text-align: center;
+}
+.main-title {
+	background-color: #479b61;
+}
+.main-title th {
+	font-size: 28px;
+	color: white;
+	text-align: center;
+	padding: 10px;
+}
+
+.nav-bar {
+	font-size: 18px;
+	background-color: #aaaaaa;
+	color: white;
+	padding: 15px;
+}
+.nav-bar a {
+	padding: 15px;
+	color: white;
+	text-decoration: none;
+}
+.nav-bar a:hover {
+	color: black;
+}
+a.login {
+	color: #ecfd6a;
+	text-decoration: underline;
+}
+
+.main-content {
+	background-color: white;
+}
+.main-content td {
+	padding: 5px;
+}
+.main-content li {
+	padding-bottom: 10px;
+}
+.error {
+	color: red;
+}
