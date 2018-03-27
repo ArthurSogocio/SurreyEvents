@@ -3,7 +3,7 @@
 session_start();
 unset($_SESSION['valid_user']);
 unset($_SESSION['callback_url']);
-unset($_SESSION['productViewed']);
+unset($_SESSION['event_viewed']);
 session_destroy();
 
 //Redirects to the showmodels.php page.
