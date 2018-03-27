@@ -9,7 +9,7 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "classicmodels";
+$dbname = "surreyevents";
 
 //Creates the connection object used to run queries.
 @ $db = new mysqli($servername, $username, $password, $dbname);
