@@ -10,21 +10,13 @@ require_once("includes/db_connection.php");
 
 //Query to populate the list of products.
 $query = "SELECT event_id, event_title FROM events ORDER BY event_title";
-$result = mysqli_query($db, $query);
-
-//Kills page if the products could not be attained.
-if (!$result) {
-    die("There is an issue with the database. Please try again later.");
-}
+$result = db_select($query);
 
 //If no one is logged in, clear the callback URL.
-//This is because if they open showmodels.php after getting a callback URL from trying to access their watchlist, they are not concerned with getting immediately redirected to the watchlist if they choose to log in normally after.
-if (!isset($_SESSION['valid_user']))
+//This is because if they open showevents.php after getting a callback URL from trying to access their watchlist, they are not concerned with getting immediately redirected to the watchlist if they choose to log in normally after.
+if (!isset($_SESSION['valid_user'])) {
     unset($_SESSION['callback_url']);
-
-//Frees result and closes the connection to the database.
-$result->free_result();
-$db->close();
+}
 ?>
 <html>
     <head>
@@ -45,10 +37,6 @@ $db->close();
                         while ($r = mysqli_fetch_assoc($result)) {
                             echo '<li><a href=modeldetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a></li>';
                         }
-
-//Frees result and closes the connection to the database.
-                        $result->free_result();
-                        $db->close();
                         ?>
                     </ul>
                 </td>
