@@ -8,7 +8,7 @@ if (isset($_SERVER["HTTPS"])) {
 require_once("includes/db_connection.php");
 
 //Query to populate the list of products.
-$query = "SELECT productCode, productName FROM products ORDER BY productName";
+$query = "SELECT event_id, event_title FROM events ORDER BY event_title";
 $result = mysqli_query($db, $query);
 
 //Kills page if the products could not be attained.
@@ -28,7 +28,7 @@ echo '<ul>';
 
 //Make new list item with link for every product.
 while ($r = mysqli_fetch_assoc($result)) {
-	echo '<li><a href=modeldetails.php?productCode="'.$r["productCode"].'">'.$r["productName"].'</a></li>';
+	echo '<li><a href=modeldetails.php?event_id='.$r["event_id"].'>'.$r["event_title"].'</a></li>';
 }
 //Frees result and closes the connection to the database.
 $result->free_result();
