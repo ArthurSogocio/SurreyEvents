@@ -12,6 +12,9 @@ define("DB_USERNAME", "root");
 define("DB_PASSWORD", "");
 define("DB_TABLES", "surreyevents");
 
+//set current timezone
+date_default_timezone_set('America/Vancouver');
+
 function create_db() {
     //Creates the connection object used to run queries.
     $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_TABLES);

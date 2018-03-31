@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //If no issues were detected from the input fields, attempt to log the user in.
     if (!isset($error)) {
         //Query to get the user's information using the input email.
-        $query = "SELECT user_id, password_hash FROM members WHERE email = '$email'";
+        $query = "SELECT user_id, username, password_hash FROM members WHERE email = '$email'";
         //echo $query;
         $result = db_select($query);
         //var_dump($result);
@@ -36,14 +36,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 //var_dump($row);
                 $pass_hash = $row['password_hash'];
                 if (password_verify($password, $pass_hash)) {
+                    //set sessions for logged in user: user name and user id
                     $_SESSION['valid_user'] = $row['user_id'];
+                    $_SESSION['valid_username'] = $row['username'];
                     if (isset($_SESSION['callback_url'])) { //If logging in after attempting to access or add to watchlist, redirect using http and the callback_url stored in the session. Unsets after setting url variable for the header statement to use.
                         $url = "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['callback_url'];
                         unset($_SESSION['callback_url']);
                         header('Location: ' . $url);
                         ;
-                    } else { //If no callback_url exists, redirect the user to the showmodels.php page.
-                        header('Location: showevents.php');
+                    } else { //If no callback_url exists, redirect the user to the homepage.
+                        header('Location: index.php');
                     }
                 } else {
                     $error = 2; //Incorrect password error.

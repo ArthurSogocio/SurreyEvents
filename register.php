@@ -51,8 +51,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param('ssss', $user_name, $name, $email, $hash);
         $stmt->execute();
 
-        //Logs in the user using the newest id generated from the above SQL INSERT statement.
+        //Logs in the user using the newest id and username generated from the above SQL INSERT statement.
         $_SESSION['valid_user'] = $db->insert_id;
+        $_SESSION['valid_username'] = $user_name;
 
         //Frees results and closes the connection to the database.
         $stmt->close();
@@ -63,8 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             unset($_SESSION['callback_url']);
             header('Location: ' . $url);
             ;
-        } else { //If no callback_url exists, redirect the new user to the showmodels.php page.
-            header('Location: showevents.php');
+        } else { //If no callback_url exists, redirect the new user to the homepage.
+            header('Location: index.php');
         }
     }
 }
