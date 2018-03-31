@@ -25,11 +25,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //If no issues were detected from the input fields, attempt to log the user in.
     if (!isset($error)) {
         //Query to get the user's information using the input email.
-        $query = "SELECT id, hashed_password FROM members WHERE email = '$email'";
+        $query = "SELECT user_id, password_hash FROM members WHERE email = '$email'";
+        echo $query;
         $result = db_select($query);
 
         //Verifies the input password with the encrypted password stored in the database. Sets valid_user with the user's id and redirects if it passes.
         while ($row = mysqli_fetch_assoc($result)) {
+            $passhash = $row['password_hash'];
             if (password_verify($password, $pass_hash)) {
                 $_SESSION['valid_user'] = $user_id;
                 if (isset($_SESSION['callback_url'])) { //If logging in after attempting to access or add to watchlist, redirect using http and the callback_url stored in the session. Unsets after setting url variable for the header statement to use.
@@ -46,9 +48,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
-
-//Adds the header.
-require('includes/header.php');
 ?>
 <html>
     <head>

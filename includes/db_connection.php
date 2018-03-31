@@ -6,16 +6,23 @@ if (basename($_SERVER['PHP_SELF']) == basename(__FILE__)) {
     exit();
 };
 
-//Initializing connection to MySQL database.
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "surreyevents";
+//define constant variables for the database
+define("DB_SERVER", "localhost");
+define("DB_USERNAME", "root");
+define("DB_PASSWORD", "");
+define("DB_TABLES", "surreyevents");
+
+function create_db() {
+    //Creates the connection object used to run queries.
+    $db = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_TABLES);
+
+    return $db;
+}
 
 //connect to for select queries
 function db_select($query) {
     //Creates the connection object used to run queries.
-    $db = mysqli_connect("localhost", "root", "", "surreyevents");
+    $db = create_db();
 
 //Error message if connection fails.
     if (mysqli_connect_errno()) {

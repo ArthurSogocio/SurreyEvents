@@ -31,6 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($password == '')
             $error = 1; //Empty field error.
 
+
+
             
 //If the field for Confirm Password does not match the password entered above (password already cannot be blank), return an error.
         if (isset($_POST['confirm_password'])) {
@@ -44,6 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //Encrypts the password into a hashed password for the database to hold.
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
+        //set the db connection
+        $db = create_db();
         //Query to insert the user's entered information into a new row in the users table. Enters the hashed password, and not the original password.
         $query = "INSERT INTO members (username, name, email, password_hash) VALUES (?, ?, ?, ?)";
         $stmt = $db->prepare($query);
@@ -63,79 +67,85 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header('Location: ' . $url);
             ;
         } else { //If no callback_url exists, redirect the new user to the showmodels.php page.
-            header('Location: showmodels.php');
+            header('Location: showevents.php');
         }
     }
 }
-
+?>
+<html>
+    <head>
+        <title>Surrey Events</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    </head>
+    <body>
+        <?php
 //Adds the header.
-require('includes/header.php');
-?>
-
-<form action="register.php" method="post">
-    <?php
-    //If any error was detected after attempting to register, a message is shown at the top of the form.
-    if (isset($error)) {
-        if ($error == 1) {
-            echo '<span class="error">All fields are required.</span>';
-        }
-        if ($error == 2) {
-            echo '<span class="error">Password was entered incorrectly. Please try again.</span>';
-        }
-    }
-    ?>
-    <table>
-        <tr>
-            <td>
-                <label>Username</label>
-            </td>
-            <td>
-                <!-- Keeps the field filled if there was a error registering and the form displays again. -->
-                <input type="text" name="user_name" value="<?php if (isset($user_name)) echo $user_name ?>">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Name</label>
-            </td>
-            <td>
-                <!-- Keeps the field filled if there was a error registering and the form displays again. -->
-                <input type="text" name="name" value="<?php if (isset($name)) echo $name ?>">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Email</label>
-            </td>
-            <td>
-                <!-- Keeps the field filled if there was a error registering and the form displays again. -->
-                <input type="text" name="email" value="<?php if (isset($email)) echo $email ?>">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Password</label>
-            </td>
-            <td>
-                <!-- Keeps the field filled if there was a error registering and the form displays again. -->
-                <input type="password" name="password" value="<?php if (isset($password)) echo $password ?>">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Confirm Password</label>
-            </td>
-            <td>
-                <input type="password" name="confirm_password" value="">
-            </td>
-        </tr>
-    </table>
-    <!-- Submit button. -->
-    <input type="submit">
-</form>
-
-<?php
+        require('includes/header.php');
+        ?>
+        <form action="register.php" method="post">
+            <?php
+            //If any error was detected after attempting to register, a message is shown at the top of the form.
+            if (isset($error)) {
+                if ($error == 1) {
+                    echo '<span class="error">All fields are required.</span>';
+                }
+                if ($error == 2) {
+                    echo '<span class="error">Password was entered incorrectly. Please try again.</span>';
+                }
+            }
+            ?>
+            <table>
+                <tr>
+                    <td>
+                        <label>Username</label>
+                    </td>
+                    <td>
+                        <!-- Keeps the field filled if there was a error registering and the form displays again. -->
+                        <input type="text" name="user_name" value="<?php if (isset($user_name)) echo $user_name ?>">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Name</label>
+                    </td>
+                    <td>
+                        <!-- Keeps the field filled if there was a error registering and the form displays again. -->
+                        <input type="text" name="name" value="<?php if (isset($name)) echo $name ?>">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Email</label>
+                    </td>
+                    <td>
+                        <!-- Keeps the field filled if there was a error registering and the form displays again. -->
+                        <input type="text" name="email" value="<?php if (isset($email)) echo $email ?>">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Password</label>
+                    </td>
+                    <td>
+                        <!-- Keeps the field filled if there was a error registering and the form displays again. -->
+                        <input type="password" name="password" value="<?php if (isset($password)) echo $password ?>">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Confirm Password</label>
+                    </td>
+                    <td>
+                        <input type="password" name="confirm_password" value="">
+                    </td>
+                </tr>
+            </table>
+            <!-- Submit button. -->
+            <input type="submit">
+        </form>
+        <?php
 //Adds the footer.
-require('includes/footer.php');
-?>
-
+        require('includes/footer.php');
+        ?>
+    </body>
+</html>
