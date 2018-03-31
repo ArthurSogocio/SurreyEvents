@@ -9,7 +9,7 @@ if (isset($_SERVER["HTTPS"])) {
 require_once("includes/db_connection.php");
 
 //Query to populate the list of products.
-$query = "SELECT event_id, event_title, start_date FROM events WHERE start_date > CURDATE() ORDER BY start_date LIMIT 5";
+$query = "SELECT event_id, event_title, start_date, DATEDIFF(start_date, CURDATE()) AS days_left FROM events WHERE start_date >= CURDATE() ORDER BY start_date LIMIT 5";
 $result = db_select($query);
 
 //If no one is logged in, clear the callback URL.
@@ -35,26 +35,16 @@ if (!isset($_SESSION['valid_user'])) {
                     <ul>
                         <?php
                         while ($r = mysqli_fetch_assoc($result)) {
-
-                            //get given date and current date, check how many days until event
-                            $startdate = strtotime($r['start_date']);
-                            $now = strtotime(date('Y-m-d'));
-                            $timeleft = $startdate  - $now;
+                            $days_left = $r['days_left'];
+                            $daysleftdisplay = 'Starts ';
+                            if ($days_left > 0) {
+                                $daysleftdisplay .= 'In ' . $days_left . " Days";
+                            } else {
+                                $daysleftdisplay .= 'Today!';
+                            }
                             
-                            echo $r['start_date'] . "<br>";
-                            echo $startdate . "<br>";
-                            echo date('Y-m-d') . "<br>";
-                            echo $now . "<br>";
-                            echo $timeleft . "<br>";
-                            $date = date('d-m-Y', $timeleft);
-                            echo $date . "<br>";
-                            echo date("l jS \of F Y h:i:s A", $timeleft) . "<br>";
-                            
-                            echo '<li><a href=modeldetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a></li>';
+                            echo '<li><a href=modeldetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a> ' . $daysleftdisplay . '</li>';
                         }
-                        //Frees result and closes the connection to the database.
-                        $result->free_result();
-                        $db->close();
                         ?>
                     </ul>
                 </td>
