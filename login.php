@@ -26,25 +26,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!isset($error)) {
         //Query to get the user's information using the input email.
         $query = "SELECT user_id, password_hash FROM members WHERE email = '$email'";
-        echo $query;
+        //echo $query;
         $result = db_select($query);
-
-        //Verifies the input password with the encrypted password stored in the database. Sets valid_user with the user's id and redirects if it passes.
-        while ($row = mysqli_fetch_assoc($result)) {
-            $passhash = $row['password_hash'];
-            if (password_verify($password, $pass_hash)) {
-                $_SESSION['valid_user'] = $user_id;
-                if (isset($_SESSION['callback_url'])) { //If logging in after attempting to access or add to watchlist, redirect using http and the callback_url stored in the session. Unsets after setting url variable for the header statement to use.
-                    $url = "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['callback_url'];
-                    unset($_SESSION['callback_url']);
-                    header('Location: ' . $url);
-                    ;
-                } else { //If no callback_url exists, redirect the user to the showmodels.php page.
-                    header('Location: showmodels.php');
+        //var_dump($result);
+        //if no emails have the typed value, return credential error
+        if (mysqli_num_rows($result) > 0) {
+            //Verifies the input password with the encrypted password stored in the database. Sets valid_user with the user's id and redirects if it passes.
+            while ($row = mysqli_fetch_assoc($result)) {
+                //var_dump($row);
+                $pass_hash = $row['password_hash'];
+                if (password_verify($password, $pass_hash)) {
+                    $_SESSION['valid_user'] = $row['user_id'];
+                    if (isset($_SESSION['callback_url'])) { //If logging in after attempting to access or add to watchlist, redirect using http and the callback_url stored in the session. Unsets after setting url variable for the header statement to use.
+                        $url = "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['callback_url'];
+                        unset($_SESSION['callback_url']);
+                        header('Location: ' . $url);
+                        ;
+                    } else { //If no callback_url exists, redirect the user to the showmodels.php page.
+                        header('Location: showevents.php');
+                    }
+                } else {
+                    $error = 2; //Incorrect password error.
                 }
-            } else {
-                $error = 2; //Incorrect password error.
             }
+        } else {
+            $error = 2; //incorrect email error
         }
     }
 }
