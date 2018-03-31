@@ -31,7 +31,7 @@ if (!isset($_SESSION['valid_user'])) {
         <table>
             <tr class="main-content">
                 <td>
-                    <h1>All Models</h1>
+                    <h1>All Events</h1>
                     <ul>
                         <?php
                         while ($r = mysqli_fetch_assoc($result)) {
