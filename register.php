@@ -30,11 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password = trim(htmlspecialchars($_POST['password']));
         if ($password == '')
             $error = 1; //Empty field error.
-
-
-
             
-//If the field for Confirm Password does not match the password entered above (password already cannot be blank), return an error.
+        //If the field for Confirm Password does not match the password entered above (password already cannot be blank), return an error.
         if (isset($_POST['confirm_password'])) {
             if ($_POST['confirm_password'] != $_POST['password'])
                 $error = 2; //Confirm password error.

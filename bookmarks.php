@@ -37,16 +37,16 @@ $stmt->bind_param('i', $_SESSION['valid_user']);
 $stmt->execute();
 $stmt->bind_result($product_id, $product_name);
 
-//Displays relevant message when opening watchlist from redirect by addtowatchlist.php (which provides the "productAdded" item).
-if (isset($_SESSION['productAdded'])) {
+//Displays relevant message when opening watchlist from redirect by addtowatchlist.php (which provides the "event_added" item).
+if (isset($_SESSION['event_added'])) {
 	while ($stmt->fetch()) { //Looks for the product added, most likely at the bottom of the results if a brand new entry.
 		//Confirmatory message for adding a watchlist item.
-		if ($_SESSION['productAdded'] == $product_id) echo '<span style="color: #479b61;">' . $product_name . ' has been successfully added to your watchlist.</span>';
+		if ($_SESSION['event_added'] == $product_id) echo '<span style="color: #479b61;">' . $product_name . ' has been successfully added to your watchlist.</span>';
 		//Message to indicate user already has the product on their watchlist, indicated by having a "dataExists" string concantenated at the end of the product's code.
-		if ($_SESSION['productAdded'] == $product_id . "dataExists") echo '<span style="color: #eb9437;">' . $product_name . ' is already on your watchlist.</span>';
+		if ($_SESSION['event_added'] == $product_id . "dataExists") echo '<span style="color: #eb9437;">' . $product_name . ' is already on your watchlist.</span>';
 	}
-	//Removes the productAdded item so the message does not show again until another redirect by addtowatchlist.php.
-	unset($_SESSION['productAdded']);
+	//Removes the event_added item so the message does not show again until another redirect by addtowatchlist.php.
+	unset($_SESSION['event_added']);
 }
 
 //Brings cursor back to the top of the results.

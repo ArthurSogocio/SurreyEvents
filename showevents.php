@@ -25,8 +25,8 @@ if (!isset($_SESSION['valid_user'])) {
     </head>
     <body>
         <?php
-//Adds the header.
-        require('includes/header.php');
+            //Adds the header.
+            require('includes/header.php');
         ?>
         <table>
             <tr class="main-content">
@@ -37,14 +37,17 @@ if (!isset($_SESSION['valid_user'])) {
                         while ($r = mysqli_fetch_assoc($result)) {
                             echo '<li><a href=modeldetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a></li>';
                         }
+                        //Frees result and closes the connection to the database.
+                        $result->free_result();
+                        $db->close();
                         ?>
                     </ul>
                 </td>
             </tr>
         </table>
         <?php
-//Adds the footer.
-        require('includes/footer.php');
+            //Adds the footer.
+            require('includes/footer.php');
         ?>
     </body>
 </html>

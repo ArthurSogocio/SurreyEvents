@@ -14,7 +14,7 @@
         <table>
             <tr class="main-content">
                 <td>
-                    <!--Header end-->
+                    <!-- Our main content to be put here -->
                 </td>
             </tr>
         </table>
