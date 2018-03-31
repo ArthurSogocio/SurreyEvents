@@ -1,6 +1,6 @@
 <table style="width:100%;">
     <tr class="main-title">
-        <th>Classic Models</th>
+        <th>Surrey Events</th>
     </tr>
     <tr>
         <td class="nav-bar">
