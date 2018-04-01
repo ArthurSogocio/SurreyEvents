@@ -22,10 +22,24 @@ if (!isset($_SESSION['valid_user'])) {
     <head>
         <title>Surrey Events</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            table, td, th {
+                border: 1px solid black;
+                padding: 5px;
+            }
+
+            th {text-align: left;}
+        </style>
         <script>
             //initialize category; start at 0 or "" means select all
             name = "";
             category = 0;
+            recency = 0;
 
             //Ajax File to apply user filters to the table query - select = select changer, change = change applied to query; 
             function updateTable(select, change) {
@@ -33,7 +47,11 @@ if (!isset($_SESSION['valid_user'])) {
                     name = change;
                 } else if (select == 'category') {
                     category = change;
+                } else if (select == 'recency') {
+                    recency = change;
                 }
+                
+                
                 if (window.XMLHttpRequest) {
                     // code for IE7+, Firefox, Chrome, Opera, Safari
                     xmlhttp = new XMLHttpRequest();
@@ -48,8 +66,10 @@ if (!isset($_SESSION['valid_user'])) {
                 };
                 xmlhttp.open("POST", "js/filterresults.php", true);
                 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xmlhttp.send("name="+ name + "&category=" + category);
+                xmlhttp.send("name=" + name + "&category=" + category + "&recency=" + recency);
             }
+            
+            window.onload = updateTable();
         </script>
     </head>
     <body>
@@ -59,19 +79,38 @@ if (!isset($_SESSION['valid_user'])) {
         ?>
         <h1>Upcoming Events</h1>
         <form>
-            Event Name: <input type="text" onkeyup="updateTable('name', this.value)">
-            <select name="users" onchange="updateTable('category', this.value)">
-                <option value="">Select a Category:</option>
-                <?php
-                while ($catrow = mysqli_fetch_assoc($catresult)) {
-                    $catid = $catrow['id'];
-                    $catname = $catrow['name'];
-                    ?>
-                    <option value="<?= $catid ?>"><?= $catname ?></option>
-                    <?php
-                }
-                ?>
-            </select>
+            <table>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Category</th>
+                    <th>Upcoming/Past Event</th>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="text" onkeyup="updateTable('name', this.value)">
+                    </td>
+                    <td>
+                        <select name="users" onchange="updateTable('category', this.value)">
+                            <option value="">Select a Category:</option>
+                            <?php
+                            while ($catrow = mysqli_fetch_assoc($catresult)) {
+                                $catid = $catrow['id'];
+                                $catname = $catrow['name'];
+                                ?>
+                                <option value="<?= $catid ?>"><?= $catname ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="users" onchange="updateTable('recency', this.value)">
+                                <option value="0">Upcoming Events</option>
+                                <option value="1">Past Events</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
         </form>
         <div id="filterresults">
             <!-- display filtered results from ajax -->

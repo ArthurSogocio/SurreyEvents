@@ -6,47 +6,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $name = trim(htmlspecialchars($_POST['name']));
     $category = trim(htmlspecialchars($_POST['category']));
+    $recency = trim(htmlspecialchars($_POST['recency']));
 
 //select query non-filtered
     $query = "SELECT events.*, categories.name FROM events "
             . "LEFT JOIN categories ON categories.id = events.category_id ";
-    
-    //set variable for category start: WHERE or AND
-    $catstart = "WHERE ";
+
+    //set variable for start: WHERE or AND
+    $start = "WHERE ";
 
     if ($name != "") {
         //if the name field has content, apply it to the query
         $query .= "WHERE events.event_title LIKE '%" . $name . "%' ";
-        
-        //if name is initialized, category will begin with 'AND' instead of 'WHERE'
-        $catstart = "AND ";
+
+        //if name is initialized, next added filters will begin with 'AND' instead of 'WHERE'
+        $start = "AND ";
     }
-    
+
     if ($category != 0) {
         //if the category was selected, filter by category
-            $query .= $catstart . "categories.id = " . $category;
-        }
+        $query .= $start . "categories.id = " . $category . " ";
 
-    echo $query;
+        //if name is initialized, next added filters will begin with 'AND' instead of 'WHERE'
+        $start = "AND ";
+    }
+
+    if ($recency == 0) {
+        //search for events that are upcoming (start date is after today)
+        $query .= $start .  "start_date >= CURDATE() ";
+        
+        //order by closest to today
+        $order =  "ASC";
+    } else {
+        //search for events that are in the past (start date is before today)
+        $query .= $start .  "start_date < CURDATE() ";
+        
+        //order by closest to today (inverse of above)
+        $order =  "DESC";
+    }
+
+    //order by the start date
+    $query .= "ORDER BY events.start_date $order";
+
+    //echo $query;
 
     $result = db_select($query);
     ?>
     <!DOCTYPE html>
     <html>
         <head>
-            <style>
-                table {
-                    width: 100%;
-                    border-collapse: collapse;
-                }
 
-                table, td, th {
-                    border: 1px solid black;
-                    padding: 5px;
-                }
-
-                th {text-align: left;}
-            </style>
         </head>
         <body>
             <table>
@@ -59,12 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </tr>
                 <?php
                 while ($row = mysqli_fetch_array($result)) {
+                    //format date output
+                    $startdateformat = date("l jS \of F Y", strtotime($row['start_date']));
                     ?>
                     <tr>
                         <td><?= $row['event_title'] ?></td>
                         <td><?= $row['name'] ?></td>
                         <td><?= $row['description'] ?></td>
-                        <td><?= $row['start_date'] ?></td>
+                        <td><?= $startdateformat ?></td>
                         <td><?= $row['end_date'] ?></td>
                     </tr>
                     <?php
