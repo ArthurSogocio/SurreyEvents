@@ -46,7 +46,7 @@ if (!isset($_SESSION['valid_user'])) {
                         document.getElementById("filterresults").innerHTML = this.responseText;
                     }
                 };
-                xmlhttp.open("POST", "js/filterresults.asp", true);
+                xmlhttp.open("POST", "js/filterresults.php", true);
                 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xmlhttp.send("name="+ name + "&category=" + category);
             }

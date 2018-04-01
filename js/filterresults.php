@@ -6,13 +6,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $name = trim(htmlspecialchars($_POST['name']));
     $category = trim(htmlspecialchars($_POST['category']));
-    
-    echo $name;
-    echo $category;
-    
+
 //select query non-filtered
     $query = "SELECT events.*, categories.name FROM events "
-            . "LEFT JOIN categories ON categories.id = events.category_id";
+            . "LEFT JOIN categories ON categories.id = events.category_id ";
+    
+    //set variable for category start: WHERE or AND
+    $catstart = "WHERE ";
+
+    if ($name != "") {
+        //if the name field has content, apply it to the query
+        $query .= "WHERE events.event_title LIKE '%" . $name . "%' ";
+        
+        //if name is initialized, category will begin with 'AND' instead of 'WHERE'
+        $catstart = "AND ";
+    }
+    
+    if ($category != 0) {
+        //if the category was selected, filter by category
+            $query .= $catstart . "categories.id = " . $category;
+        }
+
+    echo $query;
+
     $result = db_select($query);
     ?>
     <!DOCTYPE html>
@@ -35,11 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <body>
             <table>
                 <tr>
-                    <th>Firstname</th>
-                    <th>Lastname</th>
-                    <th>Age</th>
-                    <th>Hometown</th>
-                    <th>Job</th>
+                    <th>Event Name</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
                 </tr>
                 <?php
                 while ($row = mysqli_fetch_array($result)) {
@@ -50,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <td><?= $row['description'] ?></td>
                         <td><?= $row['start_date'] ?></td>
                         <td><?= $row['end_date'] ?></td>
-                        <td><?= $row['event_title'] ?></td>
                     </tr>
                     <?php
                 }
