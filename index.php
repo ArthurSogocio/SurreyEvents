@@ -43,7 +43,7 @@ if (!isset($_SESSION['valid_user'])) {
                                 $daysleftdisplay .= 'Today!';
                             }
                             
-                            echo '<li><a href=modeldetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a> ' . $daysleftdisplay . '</li>';
+                            echo '<li><a href=eventdetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a> ' . $daysleftdisplay . '</li>';
                         }
                         ?>
                     </ul>

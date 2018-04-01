@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 	if(!empty($_GET['event_id'])) {
 		//Query to get event information.
 		$query = "SELECT * FROM events WHERE event_id = " . $_GET['event_id'];
-		$result = mysqli_query($db, $query);
+		$result = db_select($query);
 	}
 } else {
 	//Kills page if no correct code for any product was provided in URL. (i.e. from direct access to page)
@@ -25,12 +25,12 @@ if (!$result) {
 	$array = mysqli_fetch_assoc($result);
 	echo "<h1>" . $array["event_title"] . "</h1>"; //Heading of page.
 	echo "<table class='details-table'><tr>"; //Row 1
-	// echo "<th>Product Code</th>";
+	echo "<th>Description</th>";
 	// echo "<th>Product Line</th>";
 	// echo "<th>Product Scale</th>";
 	// echo "<th>Product Vendor</th>";
-	// echo "</tr><tr>"; //Row 2
-	// echo "<td>".$array["productCode"]."</td>";
+	echo "</tr><tr>"; //Row 2
+	echo "<td>".$array["description"]."</td>";
 	// echo "<td>".$array["productLine"]."</td>";
 	// echo "<td>".$array["productScale"]."</td>";
 	// echo "<td>".$array["productVendor"]."</td>";
@@ -52,7 +52,6 @@ if (!$result) {
 
 	//Frees results and closes the connection to the database.
 	$result->free_result();
-	$db->close();
 
 	//Add to Watchlist button.
 	echo '<a href="addtowatchlist.php" class="anchor-button">Add to Watchlist</a>';
