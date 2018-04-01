@@ -8,7 +8,7 @@ if (isset($_SERVER["HTTPS"])) {
 //Initializing connection to MySQL database. Includes credentials and creates database connection in db_connection.php, all outside of root document. Also contains the session_start().
 require_once("includes/db_connection.php");
 
-//Query to populate the list of products.
+//Query to populate the list of events based on recency: will only select upcoming events within a month's time.
 $query = "SELECT event_id, event_title, start_date, DATEDIFF(start_date, CURDATE()) AS days_left FROM events WHERE start_date >= CURDATE() ORDER BY start_date LIMIT 5";
 $result = db_select($query);
 
@@ -46,6 +46,7 @@ if (!isset($_SESSION['valid_user'])) {
                             echo '<li><a href=eventdetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a> ' . $daysleftdisplay . '</li>';
                         }
                         ?>
+                        
                     </ul>
                 </td>
             </tr>
