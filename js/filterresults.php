@@ -6,11 +6,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $name = trim(htmlspecialchars($_POST['name']));
     $category = trim(htmlspecialchars($_POST['category']));
+    $town = trim(htmlspecialchars($_POST['town']));
     $recency = trim(htmlspecialchars($_POST['recency']));
 
 //select query non-filtered
-    $query = "SELECT events.*, categories.name FROM events "
-            . "LEFT JOIN categories ON categories.id = events.category_id ";
+    $query = "SELECT events.*, categories.name, towns.town_name FROM events "
+            . "LEFT JOIN categories ON categories.id = events.category_id "
+            . "LEFT JOIN towns ON towns.id = events.town_id ";
 
     //set variable for start: WHERE or AND
     $start = "WHERE ";
@@ -31,18 +33,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $start = "AND ";
     }
 
+    if ($town != "") {
+        //if the category was selected, filter by category
+        $query .= $start . "towns.id = " . $town . " ";
+
+        //if name is initialized, next added filters will begin with 'AND' instead of 'WHERE'
+        $start = "AND ";
+    }
+
     if ($recency == 0) {
         //search for events that are upcoming (start date is after today)
-        $query .= $start .  "start_date >= CURDATE() ";
-        
+        $query .= $start . "start_date >= CURDATE() ";
+
         //order by closest to today
-        $order =  "ASC";
+        $order = "ASC";
     } else {
         //search for events that are in the past (start date is before today)
-        $query .= $start .  "start_date < CURDATE() ";
-        
+        $query .= $start . "start_date < CURDATE() ";
+
         //order by closest to today (inverse of above)
-        $order =  "DESC";
+        $order = "DESC";
     }
 
     //order by the start date
@@ -63,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th>Event Name</th>
                     <th>Category</th>
                     <th>Description</th>
+                    <th>Town</th>
                     <th>Start Date</th>
                     <th>End Date</th>
                 </tr>
@@ -75,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <td><?= $row['event_title'] ?></td>
                         <td><?= $row['name'] ?></td>
                         <td><?= $row['description'] ?></td>
+                        <td><?= $row['town_name'] ?></td>
                         <td><?= $startdateformat ?></td>
                         <td><?= $row['end_date'] ?></td>
                     </tr>
