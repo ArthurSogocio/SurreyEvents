@@ -35,7 +35,7 @@ if (!isset($_SESSION['valid_user'])) {
                     <ul>
                         <?php
                         while ($r = mysqli_fetch_assoc($result)) {
-                            echo '<li><a href=modeldetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a></li>';
+                            echo '<li><a href=eventdetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a></li>';
                         }
                         //Frees result and closes the connection to the database.
                         $result->free_result();
