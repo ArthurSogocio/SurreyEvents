@@ -10,59 +10,75 @@ if (!isset($_SESSION['valid_user'])) {
 }
 
 //Prepared statement to get first and last name of the user logged in.
-$namequery = "SELECT first_name, last_name FROM users WHERE id = ?";
-$stmt = $db->prepare($namequery);
-$stmt->bind_param('i', $_SESSION['valid_user']);
-$stmt->execute();
-$stmt->bind_result($first_name, $last_name);
-$stmt->fetch();
+// $namequery = "SELECT name FROM members WHERE id = ?";
+// $stmt = $db->prepare($namequery);
+// $stmt->bind_param('i', $_SESSION['valid_user']);
+// $stmt->execute();
+// $stmt->bind_result($name);
+// $stmt->fetch();
 
-//Adds the header.
-require('includes/header.php'); 
-
-//Sets the page's heading with the name of user if exists.
-if (isset($first_name) && isset($last_name)) {
-	echo "<h1>Watchlist of $first_name $last_name</h1>";
-} else {
-	echo "<h1>Your Watchlist</h1>";
-}
-$stmt->close(); //Closes the prepared statement for the user's name.
-
-//Query to get all watchlist items associated with user's id and every product attached to the watchlist item.
-$query = "SELECT watchlistitems.product_id, products.productName FROM watchlistitems JOIN products ON watchlistitems.product_id = products.productCode WHERE watchlistitems.user_id = ?";
-
-//Sets up the prepared statement again to run for product information, including the product code (for linking to modeldetails.php) and product name (for the list items).
-$stmt = $db->prepare($query);
-$stmt->bind_param('i', $_SESSION['valid_user']);
-$stmt->execute();
-$stmt->bind_result($product_id, $product_name);
-
-//Displays relevant message when opening watchlist from redirect by addtowatchlist.php (which provides the "event_added" item).
-if (isset($_SESSION['event_added'])) {
-	while ($stmt->fetch()) { //Looks for the product added, most likely at the bottom of the results if a brand new entry.
-		//Confirmatory message for adding a watchlist item.
-		if ($_SESSION['event_added'] == $product_id) echo '<span style="color: #479b61;">' . $product_name . ' has been successfully added to your watchlist.</span>';
-		//Message to indicate user already has the product on their watchlist, indicated by having a "dataExists" string concantenated at the end of the product's code.
-		if ($_SESSION['event_added'] == $product_id . "dataExists") echo '<span style="color: #eb9437;">' . $product_name . ' is already on your watchlist.</span>';
-	}
-	//Removes the event_added item so the message does not show again until another redirect by addtowatchlist.php.
-	unset($_SESSION['event_added']);
-}
-
-//Brings cursor back to the top of the results.
-$stmt->execute();
-
-echo "<ul>";
-//Make new list item with link for every watchlist item.
-while ($stmt->fetch()) {
-	echo '<li><a href=modeldetails.php?productCode="'.$product_id.'">'.$product_name.'</a></li>';
-}
-//Frees results and closes the connection to the database.
-$stmt->close();
-$db->close();
-
-echo "</ul>";
-
-//Adds the footer.
-require('includes/footer.php'); 
 ?>
+<html>
+    <head>
+        <title>Surrey Events</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css">
+    </head>
+    <body>
+        <?php
+        //Adds the header.
+        require('includes/header.php');
+        ?>
+        <h1>
+			<?php
+				//Sets the page's heading with the name of user if exists.
+				echo $_SESSION['valid_username'];
+			?>'s bookmarks
+		</h1>
+
+		<?php
+		//Query to get all watchlist items associated with user's id and every product attached to the watchlist item.
+		$query = "SELECT bookmarks.event_id, events.event_title FROM bookmarks JOIN events ON bookmarks.event_id = events.event_id WHERE bookmarks.user_id = ?";
+
+		$db = create_db(); //TEMP
+
+		//Sets up the prepared statement again to run for product information, including the product code (for linking to modeldetails.php) and product name (for the list items).
+		$stmt = $db->prepare($query);
+		$stmt->bind_param('i', $_SESSION['valid_user']);
+		$stmt->execute();
+		$stmt->bind_result($event_id, $event_title);
+
+		//Displays relevant message when opening watchlist from redirect by addtowatchlist.php (which provides the "event_added" item).
+		if (isset($_SESSION['event_added'])) {
+			while ($stmt->fetch()) { //Looks for the product added, most likely at the bottom of the results if a brand new entry.
+				//Message to indicate user already has the product on their watchlist, indicated by having a "dataExists" string concantenated at the end of the product's code.
+				if ($_SESSION['event_added'] == $event_id . "dataExists") echo '<span style="color: #eb9437;">' . $event_title . ' is already in your bookmarks.</span>';
+
+				//Confirmatory message for adding a watchlist item.
+				else if ($_SESSION['event_added'] == $event_id) echo '<span style="color: #479b61;">' . $event_title . ' has been successfully added to your bookmarks.</span>';
+				
+			}
+			//Removes the event_added item so the message does not show again until another redirect by addtowatchlist.php.
+			unset($_SESSION['event_added']);
+		}
+
+		//Brings cursor back to the top of the results.
+		$stmt->execute();
+
+		echo "<ul>";
+		//Make new list item with link for every watchlist item.
+		while ($stmt->fetch()) {
+			echo '<li><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a></li>';
+		}
+		//Frees results and closes the connection to the database.
+		$stmt->close();
+		$db->close();
+
+		echo "</ul>";
+		?>
+
+		<?php
+        //Adds the footer.
+        require('includes/footer.php');
+        ?>
+    </body>
+</html>

@@ -22,19 +22,6 @@ if (!isset($_SESSION['valid_user'])) {
     <head>
         <title>Surrey Events</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
-        <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            table, td, th {
-                border: 1px solid black;
-                padding: 5px;
-            }
-
-            th {text-align: left;}
-        </style>
         <script>
             //initialize category; start at 0 or "" means select all
             name = "";
@@ -59,6 +46,7 @@ if (!isset($_SESSION['valid_user'])) {
                     // code for IE6, IE5
                     xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
                 }
+
                 xmlhttp.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         document.getElementById("filterresults").innerHTML = this.responseText;
@@ -77,7 +65,7 @@ if (!isset($_SESSION['valid_user'])) {
         //Adds the header.
         require('includes/header.php');
         ?>
-        <h1>Upcoming Events</h1>
+        <h1>Search Events</h1>
         <form>
             <table>
                 <tr>

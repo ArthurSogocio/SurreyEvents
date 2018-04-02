@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </head>
     <body>
         <?php
-//Adds the header.
+        //Adds the header.
         require('includes/header.php');
         ?>
         <table>

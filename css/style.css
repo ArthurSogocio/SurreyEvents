@@ -1,25 +1,28 @@
-.anchor-button {
-	background-color: orange;
-	color: white;
-	text-decoration: none;
-	padding: 5px;
+body {
+	font-family: Arial, sans-serif;
 }
-.details-table {
-	width: 100%;
+
+#filterresults {
+    width: 100%;
 }
-.details-table td {
-	text-align: center;
+
+#filterresults table, #filterresults td, #filterresults th {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 5px;
+    text-align: left;
 }
+
 .main-title {
 	background-color: #479b61;
 }
 .main-title th {
-	font-size: 28px;
+	font-size: 2em;
 	color: white;
 	text-align: center;
 	padding: 10px;
+	width: 8em;
 }
-
 .nav-bar {
 	font-size: 18px;
 	background-color: #aaaaaa;
@@ -34,9 +37,56 @@
 .nav-bar a:hover {
 	color: black;
 }
-a.login {
-	color: #ecfd6a;
-	text-decoration: underline;
+.nav-login {
+	width: auto;
+	text-align: center;
+}
+.nav-login a {
+	color: white;
+	text-decoration: none;
+}
+.nav-login a:hover {
+	color: black;
+}
+
+.eventImg {
+	width: 50%;
+	float: left;
+}
+.eventImg img {
+	width: 100%;
+	height: auto;
+}
+
+.details-table {
+	padding: 10px;
+	width: 50%;
+}
+.details-table td {
+	text-align: left;
+}
+.details-table td.eventImg {
+	width: 50%;
+}
+.details-table td.eventImg img {
+	width: 100%;
+	height: auto;
+}
+
+.button {
+	color: white;
+	text-decoration: none;
+	padding: 5px;
+	margin: 5px;
+}
+.website-button {
+	background-color: blue;
+}
+.bookmark-button {
+	background-color: green;
+}
+.dead-button {
+	background-color: gray;
 }
 
 .main-content {
