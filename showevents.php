@@ -12,6 +12,10 @@ require_once("includes/db_connection.php");
 $catquery = "SELECT id, name FROM categories";
 $catresult = db_select($catquery);
 
+//query to select towns from dropdown
+$townquery = "SELECT id, town_name FROM towns";
+$townresult = db_select($townquery);
+
 //If no one is logged in, clear the callback URL.
 //This is because if they open showevents.php after getting a callback URL from trying to access their watchlist, they are not concerned with getting immediately redirected to the watchlist if they choose to log in normally after.
 if (!isset($_SESSION['valid_user'])) {
@@ -26,6 +30,7 @@ if (!isset($_SESSION['valid_user'])) {
             //initialize category; start at 0 or "" means select all
             name = "";
             category = 0;
+            town = "";
             recency = 0;
 
             //Ajax File to apply user filters to the table query - select = select changer, change = change applied to query; 
@@ -34,11 +39,13 @@ if (!isset($_SESSION['valid_user'])) {
                     name = change;
                 } else if (select == 'category') {
                     category = change;
+                } else if (select == 'town') {
+                    town = change;
                 } else if (select == 'recency') {
                     recency = change;
                 }
-                
-                
+
+
                 if (window.XMLHttpRequest) {
                     // code for IE7+, Firefox, Chrome, Opera, Safari
                     xmlhttp = new XMLHttpRequest();
@@ -54,9 +61,9 @@ if (!isset($_SESSION['valid_user'])) {
                 };
                 xmlhttp.open("POST", "js/filterresults.php", true);
                 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xmlhttp.send("name=" + name + "&category=" + category + "&recency=" + recency);
+                xmlhttp.send("name=" + name + "&category=" + category + "&town=" + town + "&recency=" + recency);
             }
-            
+
             window.onload = updateTable();
         </script>
     </head>
@@ -71,6 +78,7 @@ if (!isset($_SESSION['valid_user'])) {
                 <tr>
                     <th>Event Name</th>
                     <th>Category</th>
+                    <th>Township</th>
                     <th>Upcoming/Past Event</th>
                 </tr>
                 <tr>
@@ -79,7 +87,7 @@ if (!isset($_SESSION['valid_user'])) {
                     </td>
                     <td>
                         <select name="users" onchange="updateTable('category', this.value)">
-                            <option value="">Select a Category:</option>
+                            <option value="">Select a Category</option>
                             <?php
                             while ($catrow = mysqli_fetch_assoc($catresult)) {
                                 $catid = $catrow['id'];
@@ -92,9 +100,24 @@ if (!isset($_SESSION['valid_user'])) {
                         </select>
                     </td>
                     <td>
+                        <select name="users" onchange="updateTable('town', this.value)">
+                            <option value="">Select a Town</option>
+                            <option value="0">N/A</option>
+                            <?php
+                            while ($townrow = mysqli_fetch_assoc($townresult)) {
+                                $townid = $townrow['id'];
+                                $townname = $townrow['town_name'];
+                                ?>
+                                <option value="<?= $townid ?>"><?= $townname ?></option>
+                                <?php
+                            }
+                            ?>
+                        </select>
+                    </td>
+                    <td>
                         <select name="users" onchange="updateTable('recency', this.value)">
-                                <option value="0">Upcoming Events</option>
-                                <option value="1">Past Events</option>
+                            <option value="0">Upcoming Events</option>
+                            <option value="1">Past Events</option>
                         </select>
                     </td>
                 </tr>
