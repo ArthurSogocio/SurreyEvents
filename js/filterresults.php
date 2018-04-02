@@ -9,8 +9,9 @@ $category = trim(htmlspecialchars($_POST['category']));
 $recency = trim(htmlspecialchars($_POST['recency']));
 
 //select query non-filtered
-$query = "SELECT events.*, categories.name FROM events "
-        . "LEFT JOIN categories ON categories.id = events.category_id ";
+$query = "SELECT events.*, categories.name AS category, towns.name AS town FROM events "
+        . "LEFT JOIN categories ON categories.id = events.category_id "
+        . "LEFT JOIN towns ON towns.id = events.town_id ";
 
 //set variable for start: WHERE or AND
 $start = "WHERE ";
@@ -61,9 +62,9 @@ $result = db_select($query);
             <tr>
                 <th>Event Name</th>
                 <th>Category</th>
+                <th>Town</th>
                 <th>Description</th>
                 <th>Start Date</th>
-                <th>End Date</th>
             </tr>
             <?php
             while ($row = mysqli_fetch_array($result)) {
@@ -72,10 +73,10 @@ $result = db_select($query);
                 ?>
                 <tr>
                     <td><a href="eventdetails.php?event_id='<?= $row['event_id'] ?>'"><?= $row['event_title'] ?></a></td>
-                    <td><?= $row['name'] ?></td>
+                    <td><?= $row['category'] ?></td>
+                    <td><?= $row['town'] ?></td>
                     <td><?= $row['description'] ?></td>
                     <td><?= $startdateformat ?></td>
-                    <td><?= $row['end_date'] ?></td>
                 </tr>
                 <?php
             }

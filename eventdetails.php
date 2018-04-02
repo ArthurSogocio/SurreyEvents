@@ -56,8 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 			echo "<tr>";
 				echo "<th>Start Date</th>";
 				echo "<th>End Date</th></tr>";
-				echo "<tr><td>".$array["start_date"]."</td>";
-				echo "<td>".$array["end_date"]."</td>";
+				$startdateformat = date("l jS \of F Y", strtotime($array['start_date']));
+				echo "<tr><td>".$startdateformat."</td>";
+				$enddateformat = date("l jS \of F Y", strtotime($array['end_date']));
+				echo "<td>".$enddateformat."</td>";
 			echo "</tr>";
 			echo "</table>";
 
