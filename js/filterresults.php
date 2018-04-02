@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($town != "") {
         //if the category was selected, filter by category
-        $query .= $start . "towns.id = " . $town . " ";
+        $query .= $start . "events.town_id = " . $town . " ";
 
         //if name is initialized, next added filters will begin with 'AND' instead of 'WHERE'
         $start = "AND ";
@@ -73,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th>Description</th>
                     <th>Town</th>
                     <th>Start Date</th>
-                    <th>End Date</th>
                 </tr>
                 <?php
                 while ($row = mysqli_fetch_array($result)) {
@@ -81,12 +80,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $startdateformat = date("l jS \of F Y", strtotime($row['start_date']));
                     ?>
                     <tr>
-                        <td><a href="eventdetails.php?event_id=<?=$row['event_id'] ?>"><?= $row['event_title'] ?></td>
+                        <td><a href="eventdetails.php?event_id=<?= $row['event_id'] ?>"><?= $row['event_title'] ?></td>
                         <td><?= $row['category'] ?></td>
                         <td><?= $row['description'] ?></td>
                         <td><?= $row['town'] ?></td>
                         <td><?= $startdateformat ?></td>
-                        <td><?= $row['end_date'] ?></td>
                     </tr>
                     <?php
                 }
