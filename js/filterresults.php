@@ -2,7 +2,7 @@
 //this file is accessed from showevents.php to populate the events table after being filtered
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 //Initializing connection to MySQL database. Includes credentials and creates database connection in db_connection.php, all outside of root document. Also contains the session_start().
-require_once("../includes/db_connection.php");
+    require_once("../includes/db_connection.php");
 
     $name = trim(htmlspecialchars($_POST['name']));
     $category = trim(htmlspecialchars($_POST['category']));
@@ -10,28 +10,28 @@ require_once("../includes/db_connection.php");
     $recency = trim(htmlspecialchars($_POST['recency']));
 
 //select query non-filtered
-$query = "SELECT events.*, categories.name AS category, towns.name AS town FROM events "
-        . "LEFT JOIN categories ON categories.id = events.category_id "
-        . "LEFT JOIN towns ON towns.id = events.town_id ";
+    $query = "SELECT events.*, categories.name AS category, towns.name AS town FROM events "
+            . "LEFT JOIN categories ON categories.id = events.category_id "
+            . "LEFT JOIN towns ON towns.id = events.town_id ";
 
 //set variable for start: WHERE or AND
-$start = "WHERE ";
+    $start = "WHERE ";
 
-if ($name != "") {
-    //if the name field has content, apply it to the query
-    $query .= "WHERE events.event_title LIKE '%" . $name . "%' ";
+    if ($name != "") {
+        //if the name field has content, apply it to the query
+        $query .= "WHERE events.event_title LIKE '%" . $name . "%' ";
 
-    //if name is initialized, next added filters will begin with 'AND' instead of 'WHERE'
-    $start = "AND ";
-}
+        //if name is initialized, next added filters will begin with 'AND' instead of 'WHERE'
+        $start = "AND ";
+    }
 
-if ($category != 0) {
-    //if the category was selected, filter by category
-    $query .= $start . "categories.id = " . $category . " ";
+    if ($category != 0) {
+        //if the category was selected, filter by category
+        $query .= $start . "categories.id = " . $category . " ";
 
-    //if name is initialized, next added filters will begin with 'AND' instead of 'WHERE'
-    $start = "AND ";
-}
+        //if name is initialized, next added filters will begin with 'AND' instead of 'WHERE'
+        $start = "AND ";
+    }
 
     if ($town != "") {
         //if the category was selected, filter by category
@@ -56,30 +56,17 @@ if ($category != 0) {
     }
 
 //order by the start date
-$query .= "ORDER BY events.start_date $order";
+    $query .= "ORDER BY events.start_date $order";
 
 //echo $query;
-$result = db_select($query);
+    $result = db_select($query);
+    ?>
 
-?>
-
-<!DOCTYPE html>
-<html>
-    <head></head>
-    <body>
-        <table>
-            <tr>
-                <th>Event Name</th>
-                <th>Category</th>
-                <th>Town</th>
-                <th>Description</th>
-                <th>Start Date</th>
-            </tr>
-            <?php
-            while ($row = mysqli_fetch_array($result)) {
-                //format date output
-                $startdateformat = date("l jS \of F Y", strtotime($row['start_date']));
-                ?>
+    <!DOCTYPE html>
+    <html>
+        <head></head>
+        <body>
+            <table>
                 <tr>
                     <th>Event Name</th>
                     <th>Category</th>
@@ -95,9 +82,9 @@ $result = db_select($query);
                     ?>
                     <tr>
                         <td><?= $row['event_title'] ?></td>
-                        <td><?= $row['name'] ?></td>
+                        <td><?= $row['category'] ?></td>
                         <td><?= $row['description'] ?></td>
-                        <td><?= $row['town_name'] ?></td>
+                        <td><?= $row['town'] ?></td>
                         <td><?= $startdateformat ?></td>
                         <td><?= $row['end_date'] ?></td>
                     </tr>
@@ -109,5 +96,4 @@ $result = db_select($query);
     </html> 
     <?php
 }
-
 ?>

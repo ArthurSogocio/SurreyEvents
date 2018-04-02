@@ -13,7 +13,7 @@ $catquery = "SELECT id, name FROM categories";
 $catresult = db_select($catquery);
 
 //query to select towns from dropdown
-$townquery = "SELECT id, town_name FROM towns";
+$townquery = "SELECT id, name FROM towns";
 $townresult = db_select($townquery);
 
 //If no one is logged in, clear the callback URL.
@@ -106,7 +106,7 @@ if (!isset($_SESSION['valid_user'])) {
                             <?php
                             while ($townrow = mysqli_fetch_assoc($townresult)) {
                                 $townid = $townrow['id'];
-                                $townname = $townrow['town_name'];
+                                $townname = $townrow['name'];
                                 ?>
                                 <option value="<?= $townid ?>"><?= $townname ?></option>
                                 <?php
