@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $startdateformat = date("l jS \of F Y", strtotime($row['start_date']));
                     ?>
                     <tr>
-                        <td><?= $row['event_title'] ?></td>
+                        <td><a href="eventdetails.php?event_id=<?=$row['event_id'] ?>"><?= $row['event_title'] ?></td>
                         <td><?= $row['category'] ?></td>
                         <td><?= $row['description'] ?></td>
                         <td><?= $row['town'] ?></td>
