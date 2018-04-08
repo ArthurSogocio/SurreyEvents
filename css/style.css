@@ -39,6 +39,7 @@ body {
 }
 .nav-login {
 	width: auto;
+	color: yellow;
 	text-align: center;
 }
 .nav-login a {

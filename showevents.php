@@ -26,6 +26,7 @@ if (!isset($_SESSION['valid_user'])) {
     <head>
         <title>Surrey Events</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <script src="js/jquery-3.3.1.js"></script>
         <script>
             //initialize category; start at 0 or "" means select all
             name = "";
@@ -57,11 +58,22 @@ if (!isset($_SESSION['valid_user'])) {
                 xmlhttp.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         document.getElementById("filterresults").innerHTML = this.responseText;
+
+                        $("#pagination-nav").empty();
+                        $("#pagination-nav").append("<li>[1]</li>")
+
+                        $(".page").hide();
+                        $(".page1").show();
                     }
                 };
-                xmlhttp.open("POST", "js/filterresults.php", true);
+                xmlhttp.open("POST", "includes/filterresults.php", true);
                 xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xmlhttp.send("name=" + name + "&category=" + category + "&town=" + town + "&recency=" + recency);
+
+
+                console.log("showpages?");
+
+
             }
 
             window.onload = updateTable();
@@ -123,6 +135,9 @@ if (!isset($_SESSION['valid_user'])) {
                 </tr>
             </table>
         </form>
+        <ul id="pagination-nav">
+            <!-- Nav buttons added after AJAX result. -->
+        </ul>
         <div id="filterresults">
             <!-- display filtered results from ajax -->
         </div>

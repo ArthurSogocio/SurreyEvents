@@ -22,6 +22,7 @@ if (!isset($_SESSION['valid_user'])) {
     <head>
         <title>Surrey Events</title>
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <script src="js/jquery-3.3.1.js"></script>
     </head>
     <body>
         <?php
@@ -67,13 +68,14 @@ if (!isset($_SESSION['valid_user'])) {
 		echo "<ul>";
 		//Make new list item with link for every watchlist item.
 		while ($stmt->fetch()) {
-			echo '<li><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a></li>';
+			echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a></li>';
 		}
 		//Frees results and closes the connection to the database.
 		$stmt->close();
 		$db->close();
 
 		echo "</ul>";
+		echo '<button type="button" id="delete" onclick="confirm(' . "'Delete the selected bookmarks?'" . ')" formaction="deletebookmarks.php">Delete Selected</button>';
 		?>
 
 		<?php
@@ -81,4 +83,35 @@ if (!isset($_SESSION['valid_user'])) {
         require('includes/footer.php');
         ?>
     </body>
+    <script type="text/javascript">
+    	$("#delete").click(function(event) {
+			event.preventDefault();
+
+			console.log("hello");
+
+			var myUrl = $(event.target).attr("formaction");
+			var boxes = $(".bmCheck");
+			var selected = [];
+			for (var i = 0; i < boxes.length; i++) {
+				if(boxes[i].checked) selected.push(boxes[i].parentElement.attributes["id"].value);
+			}
+			
+			console.log(selected);
+
+			if (selected.length > 0) {
+				$.ajax({
+					type: "GET",
+					url: myUrl,
+					data: {event_id: selected},
+					success: function(data) {
+						for (var i = 0; i < selected.length; i++) {
+		    				$("#"+selected[i]).fadeOut(1000, function() {
+		    					$(this).html("");
+		    				});
+		    			}
+					}
+				});
+			}
+		});
+    </script>
 </html>

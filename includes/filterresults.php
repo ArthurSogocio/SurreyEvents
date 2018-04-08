@@ -75,11 +75,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <th>Start Date</th>
                 </tr>
                 <?php
+                $page = 1;
+                $count = 0;
                 while ($row = mysqli_fetch_array($result)) {
                     //format date output
                     $startdateformat = date("l jS \of F Y", strtotime($row['start_date']));
+
+                    $count++;
+                    if($count >= 6) {
+                        $count = 1;
+                        $page++;
+                    }
+                    
                     ?>
-                    <tr>
+                    <tr class="page page<?php echo $page; ?>">
                         <td><a href="eventdetails.php?event_id=<?= $row['event_id'] ?>"><?= $row['event_title'] ?></td>
                         <td><?= $row['category'] ?></td>
                         <td><?= $row['description'] ?></td>
