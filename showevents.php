@@ -33,50 +33,45 @@ if (!isset($_SESSION['valid_user'])) {
             category = 0;
             town = "";
             recency = 0;
-
-            //Ajax File to apply user filters to the table query - select = select changer, change = change applied to query; 
-            function updateTable(select, change) {
-                if (select == 'name') {
-                    name = change;
-                } else if (select == 'category') {
-                    category = change;
-                } else if (select == 'town') {
-                    town = change;
-                } else if (select == 'recency') {
-                    recency = change;
+            $(function () {
+                //Ajax File to apply user filters to the table query - select = select changer, change = change applied to query; 
+                function updateTable() {
+                    $.post("includes/filterresults.php", {name: name, category: category, town: town, recency: recency}, function (result) {
+                        $("#filterresults").html(result);
+                    });
                 }
 
+                //filter based on which filter was changed
+                $("#name").on('change', function () {
+                    name = this.value;
+                    console.log(name);
+                    updateTable();
+                });
+                $("#category").on('change', function () {
+                    category = this.value;
+                    console.log(category);
+                    updateTable();
+                });
+                $("#town").on('change', function () {
+                    town = this.value;
+                    console.log(town);
+                    updateTable();
+                });
+                $("#recency").on('change', function () {
+                    recency = this.value;
+                    console.log(recency);
+                    updateTable();
+                });
 
-                if (window.XMLHttpRequest) {
-                    // code for IE7+, Firefox, Chrome, Opera, Safari
-                    xmlhttp = new XMLHttpRequest();
-                } else {
-                    // code for IE6, IE5
-                    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-                }
+                $("#pagination-nav").empty();
+                $("#pagination-nav").append("<li>[1]</li>");
 
-                xmlhttp.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        document.getElementById("filterresults").innerHTML = this.responseText;
+                $(".page").hide();
+                $(".page1").show();
 
-                        $("#pagination-nav").empty();
-                        $("#pagination-nav").append("<li>[1]</li>")
-
-                        $(".page").hide();
-                        $(".page1").show();
-                    }
-                };
-                xmlhttp.open("POST", "includes/filterresults.php", true);
-                xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xmlhttp.send("name=" + name + "&category=" + category + "&town=" + town + "&recency=" + recency);
-
-
-                console.log("showpages?");
-
-
-            }
-
-            window.onload = updateTable();
+                //run function on page load to show unfiltered results
+                updateTable();
+            });
         </script>
     </head>
     <body>
@@ -95,10 +90,10 @@ if (!isset($_SESSION['valid_user'])) {
                 </tr>
                 <tr>
                     <td>
-                        <input type="text" onkeyup="updateTable('name', this.value)">
+                        <input id="name">
                     </td>
                     <td>
-                        <select name="users" onchange="updateTable('category', this.value)">
+                        <select id="category">
                             <option value="">Select a Category</option>
                             <?php
                             while ($catrow = mysqli_fetch_assoc($catresult)) {
@@ -112,7 +107,7 @@ if (!isset($_SESSION['valid_user'])) {
                         </select>
                     </td>
                     <td>
-                        <select name="users" onchange="updateTable('town', this.value)">
+                        <select id="town">
                             <option value="">Select a Town</option>
                             <option value="0">N/A</option>
                             <?php
@@ -127,7 +122,7 @@ if (!isset($_SESSION['valid_user'])) {
                         </select>
                     </td>
                     <td>
-                        <select name="users" onchange="updateTable('recency', this.value)">
+                        <select id="recency">
                             <option value="0">Upcoming Events</option>
                             <option value="1">Past Events</option>
                         </select>
