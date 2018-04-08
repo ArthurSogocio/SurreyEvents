@@ -34,7 +34,7 @@ if (!isset($_SESSION['valid_user'])) {
             town = "";
             recency = 0;
             $(function () {
-                //Ajax File to apply user filters to the table query - select = select changer, change = change applied to query; 
+                //Ajax File to apply user filters to the table query - change applied to query; 
                 function updateTable() {
                     $.post("includes/filterresults.php", {name: name, category: category, town: town, recency: recency}, function (result) {
                         $("#filterresults").html(result);
@@ -44,22 +44,22 @@ if (!isset($_SESSION['valid_user'])) {
                 //filter based on which filter was changed
                 $("#name").on('change', function () {
                     name = this.value;
-                    console.log(name);
+                    //console.log(name);
                     updateTable();
                 });
                 $("#category").on('change', function () {
                     category = this.value;
-                    console.log(category);
+                    //console.log(category);
                     updateTable();
                 });
                 $("#town").on('change', function () {
                     town = this.value;
-                    console.log(town);
+                    //console.log(town);
                     updateTable();
                 });
                 $("#recency").on('change', function () {
                     recency = this.value;
-                    console.log(recency);
+                    //console.log(recency);
                     updateTable();
                 });
 
