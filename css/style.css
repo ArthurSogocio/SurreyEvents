@@ -102,3 +102,17 @@ body {
 .error {
 	color: red;
 }
+
+#pagination-nav li {
+	float: left;
+	padding: 0.2em;
+}
+#pagination-nav {
+	list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+#lastrow td {
+	font-style: italic;
+}

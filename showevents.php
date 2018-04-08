@@ -38,6 +38,23 @@ if (!isset($_SESSION['valid_user'])) {
                 function updateTable() {
                     $.post("includes/filterresults.php", {name: name, category: category, town: town, recency: recency}, function (result) {
                         $("#filterresults").html(result);
+                        $("#pagination-nav").empty();
+
+                        pages = $("#lastrow").attr("data-index");
+                        console.log(pages);
+                        for (var i = 0; i < pages; i++) {
+                            $("#pagination-nav").append("<li><a href='#' data-index='"+(i+1)+"' class='link'>["+(i+1)+"]</a></li>");
+                            // classLink = ".link" + (i+1);
+                            // console.log(classLink); 
+                        }
+                        $(".link").click(function () {
+                            $(".page").hide();
+                            var pageLink = ".page" + $(this).data('index');
+                            $(pageLink).show();
+                            console.log(pageLink);
+                        });
+                        $(".page").hide();
+                        $(".page1").show();
                     });
                 }
 
@@ -63,11 +80,7 @@ if (!isset($_SESSION['valid_user'])) {
                     updateTable();
                 });
 
-                $("#pagination-nav").empty();
-                $("#pagination-nav").append("<li>[1]</li>");
-
-                $(".page").hide();
-                $(".page1").show();
+                
 
                 //run function on page load to show unfiltered results
                 updateTable();

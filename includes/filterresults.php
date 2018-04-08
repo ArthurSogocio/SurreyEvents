@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $startdateformat = date("l jS \of F Y", strtotime($row['start_date']));
 
                     $count++;
-                    if($count >= 6) {
+                    if($count >= 11) {
                         $count = 1;
                         $page++;
                     }
@@ -98,6 +98,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php
                 }
                 ?>
+                <tr id="lastrow" class="page page<?php echo $page; ?>" data-index="<?php echo $page; ?>">
+                    <td></td>
+                    <td></td>
+                    <td>End of results.</td>
+                    <td></td>
+                    <td></td>
+                </tr>
             </table>
         </body>
     </html> 
