@@ -75,7 +75,8 @@ if (!isset($_SESSION['valid_user'])) {
 		$db->close();
 
 		echo "</ul>";
-		echo '<button type="button" id="delete" onclick="confirm(' . "'Delete the selected bookmarks?'" . ')" formaction="deletebookmarks.php">Delete Selected</button>';
+		echo '<button type="button" id="edit">Edit</button>';
+		echo '<button type="button" id="delete" formaction="deletebookmarks.php">Delete Selected</button>';
 		?>
 
 		<?php
@@ -84,10 +85,18 @@ if (!isset($_SESSION['valid_user'])) {
         ?>
     </body>
     <script type="text/javascript">
+    	
+    	$("#edit").click(function(event) {
+			event.preventDefault();
+			$(this).hide();
+			$(".bmCheck").show();
+			$("#delete").show();
+		});
+		$(".bmCheck").hide();
+    	$("#delete").hide();
+    	
     	$("#delete").click(function(event) {
 			event.preventDefault();
-
-			console.log("hello");
 
 			var myUrl = $(event.target).attr("formaction");
 			var boxes = $(".bmCheck");
@@ -95,22 +104,21 @@ if (!isset($_SESSION['valid_user'])) {
 			for (var i = 0; i < boxes.length; i++) {
 				if(boxes[i].checked) selected.push(boxes[i].parentElement.attributes["id"].value);
 			}
-			
-			console.log(selected);
-
 			if (selected.length > 0) {
-				$.ajax({
-					type: "GET",
-					url: myUrl,
-					data: {event_id: selected},
-					success: function(data) {
-						for (var i = 0; i < selected.length; i++) {
-		    				$("#"+selected[i]).fadeOut(1000, function() {
-		    					$(this).html("");
-		    				});
-		    			}
-					}
-				});
+				if (confirm("Delete the selected bookmark(s)?")) {
+					$.ajax({
+						type: "GET",
+						url: myUrl,
+						data: {event_id: selected},
+						success: function(data) {
+							for (var i = 0; i < selected.length; i++) {
+			    				$("#"+selected[i]).fadeOut(1000, function() {
+			    					$(this).html("");
+			    				});
+			    			}
+						}
+					});
+				}
 			}
 		});
     </script>
