@@ -29,13 +29,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             rating = 0;
             event = <?= $_GET['event_id'] ?>;
             user = <?php
-//if user is set, change user variable
-if (isset($_SESSION['valid_user'])) {
-    echo $_SESSION['valid_user'];
-} else {
-    echo '0';
-}
-?>;
+            //if user is set, change user variable
+            if (isset($_SESSION['valid_user'])) {
+                echo $_SESSION['valid_user'];
+            } else {
+                echo '0';
+            }
+            ?>;
             $(function () {
                 //when rating is clicked, update rating
                 $('input[name=rating]').click(function () {
@@ -81,25 +81,43 @@ if (isset($_SESSION['valid_user'])) {
             </div>
             <table class='details-table'>
                 <tr>
-                    <th>Category</th>
-                    <th>Town</th>
-                </tr>
-                <tr>
-                    <td><?= $array["category"] ?></td>
-                    <td><?= $array["town"] ?></td>
-                </tr>
-                <tr>
                     <th>Start Date</th>
-                    <th>End Date</th>
+                    <th>Category</th>
                 </tr>
                 <tr>
                     <?php
                     $startdateformat = date("l jS \of F Y", strtotime($array['start_date']));
-                    $enddateformat = date("l jS \of F Y", strtotime($array['end_date']));
+                    $enddateformat = date("l jS \of F Y", strtotime($array['end_date']));                    
                     ?>
-                    <td><?= $startdateformat ?></td>
-                    <td><?= $enddateformat ?></td>
+                    <td><?= $startdateformat ?>
+                        <?php
+                        $days_left = $array["days_left"];
+                        $daysleftdisplay = '<br><span class="countdown">Starts ';
+                        if ($days_left == 1) {
+                            $daysleftdisplay .= '<span class="today">tomorrow</span>!';
+                        } else if ($days_left > 0) {
+                            $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
+                        } else if ($days_left == 0) {
+                             $daysleftdisplay .= '<span class="today">today</span>!';
+                        } else {
+                            $daysleftdisplay = '<br><span class="countdown"><span class="past">Past event</span>';
+                        }
+                        echo $daysleftdisplay . '</span>';
+                        ?>
+                    </td>
+                    <td><?= $array["category"] ?></td>
+                    
                 </tr>
+                <tr>
+                    <th>End Date</th>
+                    <th>Town</th>
+                </tr>
+                <tr>
+                
+                    <td><?= $enddateformat ?></td>
+                    <td><?= $array["town"] ?></td>
+                </tr>
+                
             </table>
             <table class='details-table'>
                 <tr>
@@ -107,9 +125,9 @@ if (isset($_SESSION['valid_user'])) {
                         <h3>Address</h3>
                         <?php
                         if ($array["address"] != "")
-                            "<p>" . $array["address"] . "</p>";
+                            echo "<p>" . $array["address"] . "</p>";
                         else
-                            "<p>No address available.</p>";
+                            echo "<p>No address available.</p>";
                         ?>
                         <h3>Description</h3>
                         <p><?= $array["description"] ?></p>
@@ -157,75 +175,75 @@ if (isset($_SESSION['valid_user'])) {
             $result->free_result();
         }
 
-			echo "</div>";
-			echo "<table class='details-table'>";
+		// 	echo "</div>";
+		// 	echo "<table class='details-table'>";
 
-			echo "<tr>";
-				echo "<th>Start Date</th>";
-				echo "<th>Category</th></tr>";
+		// 	echo "<tr>";
+		// 		echo "<th>Start Date</th>";
+		// 		echo "<th>Category</th></tr>";
 				
-				$startdateformat = date("l jS \of F Y", strtotime($array['start_date']));
-				echo "<tr><td>".$startdateformat;
+		// 		$startdateformat = date("l jS \of F Y", strtotime($array['start_date']));
+		// 		echo "<tr><td>".$startdateformat;
 
-				$days_left = $array["days_left"];
-				$daysleftdisplay = '<br><span class="countdown">Starts ';
-	            if ($days_left == 1) {
-	                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
-	            } else if ($days_left > 0) {
-	                $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
-	            } else if ($days_left == 0) {
-	           		$daysleftdisplay .= '<span class="today">today</span>!';
-	            } else {
-	                $daysleftdisplay = '<br><span class="countdown"><span class="past">Past event</span>';
-	            }
-	            echo $daysleftdisplay . '</span>';
-	            echo "</td>";
-	            echo "<td>".$array["category"]."</td>";
+		// 		$days_left = $array["days_left"];
+		// 		$daysleftdisplay = '<br><span class="countdown">Starts ';
+	 //            if ($days_left == 1) {
+	 //                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
+	 //            } else if ($days_left > 0) {
+	 //                $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
+	 //            } else if ($days_left == 0) {
+	 //           		$daysleftdisplay .= '<span class="today">today</span>!';
+	 //            } else {
+	 //                $daysleftdisplay = '<br><span class="countdown"><span class="past">Past event</span>';
+	 //            }
+	 //            echo $daysleftdisplay . '</span>';
+	 //            echo "</td>";
+	 //            echo "<td>".$array["category"]."</td>";
 
-			echo "</tr>";
-			echo "<tr>";
+		// 	echo "</tr>";
+		// 	echo "<tr>";
 				
-				echo "<th>End Date</th>";
-				echo "<th>Town</th></tr>";
-				$enddateformat = date("l jS \of F Y", strtotime($array['end_date']));
-				echo "<td>".$enddateformat."</td>";
-				echo "<td>".$array["town"]."</td>";
+		// 		echo "<th>End Date</th>";
+		// 		echo "<th>Town</th></tr>";
+		// 		$enddateformat = date("l jS \of F Y", strtotime($array['end_date']));
+		// 		echo "<td>".$enddateformat."</td>";
+		// 		echo "<td>".$array["town"]."</td>";
 				
-			echo "</tr>";
+		// 	echo "</tr>";
 
-			echo "</table>";
+		// 	echo "</table>";
 
-			echo "<table class='details-table'>";
-			echo "<tr><td>";
-			echo "<h3>Address</h3>";
+		// 	echo "<table class='details-table'>";
+		// 	echo "<tr><td>";
+		// 	echo "<h3>Address</h3>";
 
-			if ($array["address"] != "") echo "<p>".$array["address"]."</p>";
-			else echo "<p>No address available.</p>";
+		// 	if ($array["address"] != "") echo "<p>".$array["address"]."</p>";
+		// 	else echo "<p>No address available.</p>";
 
-			echo "<h3>Description</h3>";
-			echo "<p>".$array["description"]."</p>";
-			echo "</td></tr>";
-			echo "<tr><td style='padding-top: 15px;'>";
+		// 	echo "<h3>Description</h3>";
+		// 	echo "<p>".$array["description"]."</p>";
+		// 	echo "</td></tr>";
+		// 	echo "<tr><td style='padding-top: 15px;'>";
 
-			//Website button.
-			if ($array["website_url"] != "") {
-				echo "<a class='button website-button' href=" . $array["website_url"] . " target='_blank'>Website</a>";
-			} else {
-				echo "<a class='button dead-button'>Website link unavailable.</a>";
-			}
-			//Add to bookmarks button.
-			echo '<a href="addtobookmarks.php" class="button bookmark-button">Bookmark</a>';
+		// 	//Website button.
+		// 	if ($array["website_url"] != "") {
+		// 		echo "<a class='button website-button' href=" . $array["website_url"] . " target='_blank'>Website</a>";
+		// 	} else {
+		// 		echo "<a class='button dead-button'>Website link unavailable.</a>";
+		// 	}
+		// 	//Add to bookmarks button.
+		// 	echo '<a href="addtobookmarks.php" class="button bookmark-button">Bookmark</a>';
 
-			echo "</td></tr>";
-			echo "</table>";
+		// 	echo "</td></tr>";
+		// 	echo "</table>";
 
-			//Saves this product code to session so addtowatchlist.php can make a new watchlist item with it, even after having to login or register.
-			//Won't cause a mistaken entry because button to add to watchlist only ever appears after this statement.
-			$_SESSION['event_viewed'] = $array["event_id"];
+		// 	//Saves this product code to session so addtowatchlist.php can make a new watchlist item with it, even after having to login or register.
+		// 	//Won't cause a mistaken entry because button to add to watchlist only ever appears after this statement.
+		// 	$_SESSION['event_viewed'] = $array["event_id"];
 
-			//Frees results and closes the connection to the database.
-			$result->free_result();
-		}
+		// 	//Frees results and closes the connection to the database.
+		// 	$result->free_result();
+		// }
 		?>
 
 		<?php
