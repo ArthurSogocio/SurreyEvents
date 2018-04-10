@@ -83,7 +83,7 @@ if (isset($_SESSION['valid_user'])) {
             //Using associative array from result, populate table columns with corresponding information.
             $array = mysqli_fetch_assoc($result);
             ?>
-            <h1><?= $array["event_title"] //Heading of page.   ?></h1> 
+            <h1><?= $array["event_title"] //Heading of page.    ?></h1> 
 
             <div class='eventImg'>
                 <?php
@@ -168,21 +168,24 @@ if (isset($_SESSION['valid_user'])) {
                         $event = $_GET['event_id'];
                         //get query for related events
                         $relatedquery = "(SELECT events.event_title as title, events.event_id as id "
-                            . "FROM repeating_events r1 "
-                            . "LEFT JOIN repeating_events r2 ON r1.event_id = r2.next_event_id "
-                            . "LEFT JOIN events ON events.event_id = r2.next_event_id "
-                            . "WHERE r1.next_event_id = $event ) "
-                            . "UNION (SELECT events.event_title as title, events.event_id as id "
-                            . "FROM repeating_events "
-                            . "LEFT JOIN events ON repeating_events.next_event_id = events.event_id "
-                            . "WHERE repeating_events.event_id = $event ) "
-                            . "UNION (SELECT e2.event_title as title, e2.event_id as id "
-                            . "FROM events e1 "
-                            . "LEFT JOIN events e2 ON e2.category_id = e1.category_id "
-                            . "WHERE e1.event_id = $event )";
+                                . "FROM repeating_events r1 "
+                                . "LEFT JOIN repeating_events r2 ON r1.event_id = r2.next_event_id "
+                                . "LEFT JOIN events ON events.event_id = r2.next_event_id "
+                                . "WHERE r1.next_event_id = $event ) "
+                                . "UNION (SELECT events.event_title as title, events.event_id as id "
+                                . "FROM repeating_events "
+                                . "LEFT JOIN events ON repeating_events.next_event_id = events.event_id "
+                                . "WHERE repeating_events.event_id = $event ) "
+                                . "UNION (SELECT e2.event_title as title, e2.event_id as id "
+                                . "FROM events e1 "
+                                . "LEFT JOIN events e2 ON e2.category_id = e1.category_id "
+                                . "WHERE e1.event_id = $event )";
                         $relatedresult = db_select($relatedquery);
                         while ($rowrel = mysqli_fetch_assoc($relatedresult)) {
-                            echo $rowrel['title'] . " " . $rowrel['id'] . "<br>";
+                            //do not show the current event
+                            if ($rowrel['id'] != $event) {
+                                echo "<a href='eventdetails.php?event_id=" . $rowrel['id'] . "'>" . $rowrel['title'] . "</a><br>";
+                            }
                         }
                         ?>
                     </td>
@@ -213,7 +216,7 @@ if (isset($_SESSION['valid_user'])) {
                 <tr>
                     <td>
                         <textarea id="newcomment">
-                                    
+                                        
                         </textarea>
                         <button id="submitcomment">Submit Comment</button>
                     </td>
