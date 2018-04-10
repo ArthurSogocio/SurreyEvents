@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     //if $rating is not 0, that means that the user submitted a result; check data to insert into the table
     if ($rating != 0) {
-        $userrating = "User Rating: $rating <br>";
+        $userrating = "Your rating: $rating <br>";
         //one user may only rate one event once; check if user already rated selected event
         $searchquery = "SELECT id FROM ratings WHERE user_id = $user AND event_id = $event LIMIT 1";
         $searchresult = db_select($searchquery);
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $searchresult = db_select($searchquery);
         if (mysqli_num_rows($searchresult) != 0) {
             while ($row = mysqli_fetch_assoc($searchresult)) {
-                $userrating = "User Rating:" . $row['rating'] . "<br>";
+                $userrating = "Your rating: " . $row['rating'] . "<br>";
             }
         }
     }
@@ -53,9 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //echo $query;
     $result = db_select($query);
     while ($row = mysqli_fetch_assoc($result)) {
-        echo "Rating: " . $row['rating'] . '<br>';
-        echo $userrating;
-        echo "Total Votes: " . $row['total'];
+        echo "<h3>Rating: <span class='rating'>" . round($row['rating'], 1) . '</span> (' . $row['total'] . ' votes)<br>';
+        echo $userrating . '</h3>';
     }
 }
 ?>

@@ -7,6 +7,15 @@ figcaption {
 	font-size: 0.8em;
 }
 
+td.comment {
+	word-break: break-all;	
+}
+
+span.rating {
+	font-size: 1.5em;
+	color: #c6c050;
+}
+
 #filterresults {
     width: 100%;
 }

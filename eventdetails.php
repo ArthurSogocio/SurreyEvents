@@ -30,13 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             comment = "";
             event = <?= $_GET['event_id'] ?>;
             user = <?php
-//if user is set, change user variable
-if (isset($_SESSION['valid_user'])) {
-    echo $_SESSION['valid_user'];
-} else {
-    echo '0';
-}
-?>;
+            //if user is set, change user variable
+            if (isset($_SESSION['valid_user'])) {
+                echo $_SESSION['valid_user'];
+            } else {
+                echo '0';
+            }
+            ?>;
             $(function () {
                 //when rating is clicked, update rating
                 $('input[name=rating]').click(function () {
@@ -94,6 +94,36 @@ if (isset($_SESSION['valid_user'])) {
                 ?>
             </div>
             <table class='details-table'>
+                <tr>
+                    <td>
+                        <div id="updatedRating"></div>
+                    </td>
+                    <td>
+                        <!-- Event rating options only show up if user is signed in -->
+                        <?php
+                        if (isset($_SESSION['valid_user'])) {
+                        ?>
+                            
+                            <form action="#" id="rating">
+                                <input type="radio" name="rating" value="1"> 1
+                                <input type="radio" name="rating" value="2"> 2
+                                <input type="radio" name="rating" value="3"> 3
+                                <input type="radio" name="rating" value="4"> 4
+                                <input type="radio" name="rating" value="5"> 5
+                            </form>
+                            </td>
+
+                        <?php
+                        } else {
+                            ?>
+                            
+                            <span>Please log in to give a rating.</span>
+                            <?php
+                        }
+                        ?>
+                    
+                    </td>
+                </tr>
                 <tr>
                     <th>Start Date</th>
                     <th>Category</th>
@@ -161,36 +191,20 @@ if (isset($_SESSION['valid_user'])) {
                         <a href="addtobookmarks.php" class="button bookmark-button">Bookmark</a>
                     </td>
                 </tr>
-                <td>
-                    <h3>Rating</h3>
-                    <!-- Event rating options only show up if user is signed in -->
-                    <?php
-                    if (isset($_SESSION['valid_user'])) {
-                        ?>
-                        <h4 id="updatedRating"></h4>
-                        <form action="#" id="rating">
-                            <input type="radio" name="rating" value="1"> 1<br>
-                            <input type="radio" name="rating" value="2"> 2<br>
-                            <input type="radio" name="rating" value="3"> 3<br>
-                            <input type="radio" name="rating" value="4"> 4<br>
-                            <input type="radio" name="rating" value="5"> 5
-                        </form>
-                        <?php
-                    }
-                    ?>
-                </td>
+                
             </table>
             <!-- Comments -->
             <table>
-                <tr>
-                    <td>
-                        <textarea id="newcomment">
-                            
-                        </textarea>
-                        <button id="submitcomment">Submit Comment</button>
-                    </td>
+                <tr id="commentsection">
+                    <h2>Comments</h2>
                     <td id="comments">
 
+                    </td>
+                <tr>
+                </tr>
+                    <td>
+                        <textarea id="newcomment" rows="4" cols="50"></textarea><br>
+                        <button id="submitcomment">Submit Comment</button>
                     </td>
                 </tr>
             </table>

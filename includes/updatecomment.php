@@ -31,16 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ?>
     <table>
         <?php
+        $i = 0;
         while ($row = mysqli_fetch_assoc($result)) {
+            $i++;
             ?>
-            <tr>
-                <td>
+            <tr <?php if($i % 2 == 0) echo "style='background-color: #cef0b2;'"; else echo "style='background-color: #effce4;'" ?>>
+                <td style="width: 15%; padding: 0.5em;">
                     <?php
-                    echo $row['username'] . " On " . date("l jS \of F Y", strtotime($row['date'])) . ":";
+                    echo "<a href='bookmarks.php?user=" . $row['username'] . "'>" . $row['username'] . "</a>";
+                    echo "<br>";
+                    echo date('Y/m/d', strtotime($row['date']));
                     ?>
                 </td>
-                <td>
+                <td class="comment">
                     <?= $row['comment'] ?>
+                    
                 </td>
             </tr>
             <?php
