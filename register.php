@@ -139,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </tr>
             </table>
             <!-- Submit button. -->
-            <input type="submit">
+            <input type="submit" value="Create Account">
         </form>
         <?php
 //Adds the footer.
