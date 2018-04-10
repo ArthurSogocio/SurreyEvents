@@ -52,23 +52,60 @@ if (!isset($_SESSION['valid_user'])) {
                             } else {
                                 $daysleftdisplay .= '<span class="today">today</span>!';
                             }
-                            
+
                             echo '<li><a href=eventdetails.php?event_id=' . $r["event_id"] . '>' . $r["event_title"] . '</a> ' . $daysleftdisplay . '</span></li>';
                         }
                         ?>
-                        
+
                     </ul>
+                    <?php
+                    //if user is logged in, show recommended events
+                    if (isset($_SESSION['valid_user'])) {
+                        //selects most selected category by bookmarks
+                        $mostquery = "SELECT COUNT(categories.name) as total, categories.id "
+                                . "FROM members LEFT JOIN bookmarks ON bookmarks.user_id = members.user_id "
+                                . "LEFT JOIN events ON events.event_id = bookmarks.event_id "
+                                . "LEFT JOIN categories ON categories.id = events.category_id "
+                                . "WHERE members.user_id = 4 GROUP BY categories.name ORDER BY total DESC LIMIT 1 ";
+                        $mostresult = db_select($mostquery);
+                        //check if user selected any events for their bookmarks at all
+                        if (mysqli_num_rows($mostresult) != 0) {
+                            //get id of most selected category, run query to select all rows
+                            $most = mysqli_fetch_assoc($mostresult);
+                            $mostid = $most["id"];
+                            $recommendquery = "SELECT event_id, event_title, start_date, DATEDIFF(start_date, CURDATE()) AS days_left "
+                                    . "FROM events WHERE start_date >= CURDATE() AND category_id = $mostid ORDER BY start_date LIMIT 5";
+                            $recresult = db_select($recommendquery);
+                        }
+                        ?>
+                        <h1>Recommended</h1>
+                        <?php
+                        while ($recrow = mysqli_fetch_assoc($recresult)) {
+                            $days_left = $recrow['days_left'];
+                            $daysleftdisplay = '<br><span class="countdown">Starts ';
+                            if ($days_left == 1) {
+                                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
+                            } else if ($days_left > 0) {
+                                $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
+                            } else {
+                                $daysleftdisplay .= '<span class="today">today</span>!';
+                            }
+
+                            echo '<li><a href=eventdetails.php?event_id=' . $recrow["event_id"] . '>' . $recrow["event_title"] . '</a> ' . $daysleftdisplay . '</span></li>';
+                        }
+                    }
+                    ?>
                 </td>
                 <td style="width: 50%;">
                     <img src='<?php echo $imagesrc; ?>' style="width: 100%; height: auto;">
-                        <figcaption><?php echo $imagecap; ?></figcaption>
-                    </img>
-                </td>
-            </tr>
-        </table>
-        <?php
-        //Adds the footer.
-        require('includes/footer.php');
-        ?>
-    </body>
+            <figcaption><?php echo $imagecap; ?></figcaption>
+            </img>
+        </td>
+    </tr>
+</table>
+<?php
+//Adds the footer.
+require('includes/footer.php');
+?>
+</body>
 </html>
