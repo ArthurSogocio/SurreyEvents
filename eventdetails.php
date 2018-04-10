@@ -43,9 +43,9 @@ if (isset($_SESSION['valid_user'])) {
                     rating = $('input[name=rating]:checked').val();
                     updateRating();
                 });
-                
+
                 //when comment is submitted, insert the comment
-                $('#submitcomment').click(function(){
+                $('#submitcomment').click(function () {
                     comment = $('#newcomment').val();
                     showComments();
                 });
@@ -83,7 +83,7 @@ if (isset($_SESSION['valid_user'])) {
             //Using associative array from result, populate table columns with corresponding information.
             $array = mysqli_fetch_assoc($result);
             ?>
-            <h1><?= $array["event_title"] //Heading of page. ?></h1> 
+            <h1><?= $array["event_title"] //Heading of page.   ?></h1> 
 
             <div class='eventImg'>
                 <?php
@@ -161,31 +161,59 @@ if (isset($_SESSION['valid_user'])) {
                         <a href="addtobookmarks.php" class="button bookmark-button">Bookmark</a>
                     </td>
                 </tr>
-                <td>
-                    <h3>Rating</h3>
-                    <!-- Event rating options only show up if user is signed in -->
-                    <?php
-                    if (isset($_SESSION['valid_user'])) {
-                        ?>
-                        <h4 id="updatedRating"></h4>
-                        <form action="#" id="rating">
-                            <input type="radio" name="rating" value="1"> 1<br>
-                            <input type="radio" name="rating" value="2"> 2<br>
-                            <input type="radio" name="rating" value="3"> 3<br>
-                            <input type="radio" name="rating" value="4"> 4<br>
-                            <input type="radio" name="rating" value="5"> 5
-                        </form>
+                <tr>
+                    <td>
+                        <h3>Related Events</h3>
                         <?php
-                    }
-                    ?>
-                </td>
+                        $event = $_GET['event_id'];
+                        //get query for related events
+                        $relatedquery = "(SELECT events.event_title as title, events.event_id as id "
+                            . "FROM repeating_events r1 "
+                            . "LEFT JOIN repeating_events r2 ON r1.event_id = r2.next_event_id "
+                            . "LEFT JOIN events ON events.event_id = r2.next_event_id "
+                            . "WHERE r1.next_event_id = $event ) "
+                            . "UNION (SELECT events.event_title as title, events.event_id as id "
+                            . "FROM repeating_events "
+                            . "LEFT JOIN events ON repeating_events.next_event_id = events.event_id "
+                            . "WHERE repeating_events.event_id = $event ) "
+                            . "UNION (SELECT e2.event_title as title, e2.event_id as id "
+                            . "FROM events e1 "
+                            . "LEFT JOIN events e2 ON e2.category_id = e1.category_id "
+                            . "WHERE e1.event_id = $event )";
+                        $relatedresult = db_select($relatedquery);
+                        while ($rowrel = mysqli_fetch_assoc($relatedresult)) {
+                            echo $rowrel['title'] . " " . $rowrel['id'] . "<br>";
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3>Rating</h3>
+                        <!-- Event rating options only show up if user is signed in -->
+                        <?php
+                        if (isset($_SESSION['valid_user'])) {
+                            ?>
+                            <h4 id="updatedRating"></h4>
+                            <form action="#" id="rating">
+                                <input type="radio" name="rating" value="1"> 1<br>
+                                <input type="radio" name="rating" value="2"> 2<br>
+                                <input type="radio" name="rating" value="3"> 3<br>
+                                <input type="radio" name="rating" value="4"> 4<br>
+                                <input type="radio" name="rating" value="5"> 5
+                            </form>
+                            <?php
+                        }
+                        ?>
+                    </td>
+                </tr>
             </table>
             <!-- Comments -->
             <table>
                 <tr>
                     <td>
                         <textarea id="newcomment">
-                            
+                                    
                         </textarea>
                         <button id="submitcomment">Submit Comment</button>
                     </td>
