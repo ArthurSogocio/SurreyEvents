@@ -59,7 +59,7 @@ if (!isset($_SESSION['valid_user'])) {
                 }
 
                 //filter based on which filter was changed
-                $("#name").on('change', function () {
+                $("#name").bind('input', function () {
                     name = this.value;
                     //console.log(name);
                     updateTable();
