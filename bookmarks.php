@@ -17,6 +17,11 @@ if (!isset($_SESSION['valid_user'])) {
 // $stmt->bind_result($name);
 // $stmt->fetch();
 
+$this_user = $_SESSION['valid_username'];
+if (isset($_GET["user"])) {
+	$this_user = $_GET["user"];
+}
+
 ?>
 <html>
     <head>
@@ -30,53 +35,74 @@ if (!isset($_SESSION['valid_user'])) {
         require('includes/header.php');
         ?>
         <h1>
-			<?php
+			Bookmarks for <?php
 				//Sets the page's heading with the name of user if exists.
-				echo $_SESSION['valid_username'];
-			?>'s bookmarks
+				echo $this_user;
+			?>
 		</h1>
 
 		<?php
-		//Query to get all watchlist items associated with user's id and every product attached to the watchlist item.
-		$query = "SELECT bookmarks.event_id, events.event_title FROM bookmarks JOIN events ON bookmarks.event_id = events.event_id WHERE bookmarks.user_id = ?";
+		//Query to get all bookmark items associated with user's id and every product attached to the bookmark item.
+		
+
+		$query = "SELECT bookmarks.event_id, events.event_title, DATEDIFF(events.start_date, CURDATE()) AS days_left, members.username FROM bookmarks JOIN events ON bookmarks.event_id = events.event_id JOIN members ON bookmarks.user_id = members.user_id WHERE members.username = ?";
 
 		$db = create_db(); //TEMP
 
 		//Sets up the prepared statement again to run for product information, including the product code (for linking to modeldetails.php) and product name (for the list items).
 		$stmt = $db->prepare($query);
-		$stmt->bind_param('i', $_SESSION['valid_user']);
+		$stmt->bind_param('s', $this_user);
 		$stmt->execute();
-		$stmt->bind_result($event_id, $event_title);
+		$stmt->bind_result($event_id, $event_title, $days_left, $username);
 
-		//Displays relevant message when opening watchlist from redirect by addtowatchlist.php (which provides the "event_added" item).
+		//Displays relevant message when opening bookmark from redirect by addtobookmarks.php (which provides the "event_added" item).
 		if (isset($_SESSION['event_added'])) {
 			while ($stmt->fetch()) { //Looks for the product added, most likely at the bottom of the results if a brand new entry.
-				//Message to indicate user already has the product on their watchlist, indicated by having a "dataExists" string concantenated at the end of the product's code.
-				if ($_SESSION['event_added'] == $event_id . "dataExists") echo '<span style="color: #eb9437;">' . $event_title . ' is already in your bookmarks.</span>';
+				//Message to indicate user already has the product on their bookmarks, indicated by having a "dataExists" string concantenated at the end of the product's code.
+				if ($_SESSION['event_added'] == $event_id . "dataExists") echo '<span style="color: #eb9437;">' . $event_title . ' is already in your bookmarks.</span><br>';
 
-				//Confirmatory message for adding a watchlist item.
-				else if ($_SESSION['event_added'] == $event_id) echo '<span style="color: #479b61;">' . $event_title . ' has been successfully added to your bookmarks.</span>';
+				//Confirmatory message for adding a bookmark item.
+				else if ($_SESSION['event_added'] == $event_id) echo '<span style="color: #479b61;">' . $event_title . ' has been successfully added to your bookmarks.</span><br>';
 				
 			}
-			//Removes the event_added item so the message does not show again until another redirect by addtowatchlist.php.
+			//Removes the event_added item so the message does not show again until another redirect by addtobookmarks.php.
 			unset($_SESSION['event_added']);
 		}
 
 		//Brings cursor back to the top of the results.
 		$stmt->execute();
 
+		if ($this_user == $_SESSION['valid_username']) {
+			echo '<button type="button" id="edit">Edit</button>';
+			echo '<button type="button" id="done">Done</button>';
+			echo '<button type="button" id="delete" formaction="deletebookmarks.php">Delete</button>';
+		}
+
 		echo "<ul>";
-		//Make new list item with link for every watchlist item.
+		//Make new list item with link for every bookmark item.
 		while ($stmt->fetch()) {
-			echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a></li>';
+            $daysleftdisplay = '<br><span class="countdown">Starts ';
+
+            if ($days_left == 1) {
+                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
+            } else if ($days_left > 0) {
+                $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
+            } else if ($days_left == 0) {
+           		$daysleftdisplay .= '<span class="today">today</span>!';
+            } else {
+                $daysleftdisplay = '<br><span>&nbsp;';
+            }
+
+			echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
+
 		}
 		//Frees results and closes the connection to the database.
 		$stmt->close();
 		$db->close();
 
 		echo "</ul>";
-		echo '<button type="button" id="edit">Edit</button>';
-		echo '<button type="button" id="delete" formaction="deletebookmarks.php">Delete Selected</button>';
+
+		
 		?>
 
 		<?php
@@ -91,9 +117,18 @@ if (!isset($_SESSION['valid_user'])) {
 			$(this).hide();
 			$(".bmCheck").show();
 			$("#delete").show();
+			$("#done").show();
+		});
+		$("#done").click(function(event) {
+			event.preventDefault();
+			$(this).hide();
+			$(".bmCheck").hide();
+			$("#delete").hide();
+			$("#edit").show();
 		});
 		$(".bmCheck").hide();
     	$("#delete").hide();
+    	$("#done").hide();
     	
     	$("#delete").click(function(event) {
 			event.preventDefault();

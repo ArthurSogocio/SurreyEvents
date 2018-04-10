@@ -1,6 +1,6 @@
 <table style="width:100%;">
     <tr class="main-title">
-        <th>Surrey Events</th>
+        <th><a href="index.php">Surrey Events</a></th>
         <td class="nav-bar">
             <a href="index.php">Home</a> | 
             <a href="showevents.php">Events</a> | 

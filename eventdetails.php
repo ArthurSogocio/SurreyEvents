@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 	if(!empty($_GET['event_id'])) {
 		//Query to get event information.
 
-		$query = "SELECT events.*, categories.name AS category, towns.name AS town FROM events "
+		$query = "SELECT events.*, DATEDIFF(events.start_date, CURDATE()) AS days_left, categories.name AS category, towns.name AS town FROM events "
         . "LEFT JOIN categories ON categories.id = events.category_id "
         . "LEFT JOIN towns ON towns.id = events.town_id "
         . "WHERE event_id = " . $_GET['event_id'];
@@ -47,20 +47,40 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
 			echo "</div>";
 			echo "<table class='details-table'>";
-			echo "<tr>";
-				echo "<th>Category</th>";
-				echo "<th>Town</th></tr>";
-				echo "<tr><td>".$array["category"]."</td>";
-				echo "<td>".$array["town"]."</td>";
-			echo "</tr>";
+
 			echo "<tr>";
 				echo "<th>Start Date</th>";
-				echo "<th>End Date</th></tr>";
+				echo "<th>Category</th></tr>";
+				
 				$startdateformat = date("l jS \of F Y", strtotime($array['start_date']));
-				echo "<tr><td>".$startdateformat."</td>";
+				echo "<tr><td>".$startdateformat;
+
+				$days_left = $array["days_left"];
+				$daysleftdisplay = '<br><span class="countdown">Starts ';
+	            if ($days_left == 1) {
+	                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
+	            } else if ($days_left > 0) {
+	                $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
+	            } else if ($days_left == 0) {
+	           		$daysleftdisplay .= '<span class="today">today</span>!';
+	            } else {
+	                $daysleftdisplay = '<br><span class="countdown"><span class="past">Past event</span>';
+	            }
+	            echo $daysleftdisplay . '</span>';
+	            echo "</td>";
+	            echo "<td>".$array["category"]."</td>";
+
+			echo "</tr>";
+			echo "<tr>";
+				
+				echo "<th>End Date</th>";
+				echo "<th>Town</th></tr>";
 				$enddateformat = date("l jS \of F Y", strtotime($array['end_date']));
 				echo "<td>".$enddateformat."</td>";
+				echo "<td>".$array["town"]."</td>";
+				
 			echo "</tr>";
+
 			echo "</table>";
 
 			echo "<table class='details-table'>";

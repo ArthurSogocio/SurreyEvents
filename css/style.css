@@ -1,6 +1,11 @@
 body {
 	font-family: Arial, sans-serif;
 }
+figcaption {
+	margin-top: 0.2em;
+	font-style: italic;
+	font-size: 0.8em;
+}
 
 #filterresults {
     width: 100%;
@@ -22,6 +27,10 @@ body {
 	text-align: center;
 	padding: 10px;
 	width: 8em;
+}
+.main-title th a {
+	color: white;
+	text-decoration: none;
 }
 .nav-bar {
 	font-size: 18px;
@@ -63,7 +72,7 @@ body {
 	padding: 10px;
 	width: 50%;
 }
-.details-table td {
+.details-table td, .details-table th {
 	text-align: left;
 }
 .details-table td.eventImg {
@@ -115,4 +124,19 @@ body {
 }
 #lastrow td {
 	font-style: italic;
+}
+.countdown {
+	margin-left: 3em;
+	color: #479b61;
+	font-size: 0.8em;
+}
+.countdown .days {
+	color: #5185fe;
+	font-size: 1.2em;
+}
+.countdown .today {
+	color: #5185fe;
+}
+.countdown .past {
+	color: #eb9437;
 }
