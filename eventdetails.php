@@ -60,6 +60,7 @@ if (isset($_SESSION['valid_user'])) {
                 function showComments() {
                     $.post("includes/updatecomment.php", {comment: comment, event: event, user: user}, function (result) {
                         $("#comments").html(result);
+                        $('#newcomment').val('');
                     });
                 }
 
@@ -88,7 +89,7 @@ if (isset($_SESSION['valid_user'])) {
             <div class='eventImg'>
                 <?php
                 if ($array["img_url"] != "")
-                    echo "<img src=" . $array["img_url"] . "></img>";
+                    echo "<img src=" . $array["img_url"] . " onerror=\"this.src='assets/placeholder.png'\"></img>";
                 else
                     echo "<img src='assets/placeholder.png'></img>";
                 ?>
@@ -191,9 +192,13 @@ if (isset($_SESSION['valid_user'])) {
                 <a href="addtobookmarks.php" class="button bookmark-button">Bookmark</a>
             </td>
         </tr>
+        
+    </table>
+    <!-- Comments -->
+    <table>
         <tr>
             <td>
-                <h3>Related Events</h3>
+                <h2>Related Events</h2>
                 <?php
                 $event = $_GET['event_id'];
                 //get query for related events
@@ -209,7 +214,7 @@ if (isset($_SESSION['valid_user'])) {
                         . "UNION (SELECT e2.event_title as title, e2.event_id as id "
                         . "FROM events e1 "
                         . "LEFT JOIN events e2 ON e2.category_id = e1.category_id "
-                        . "WHERE e1.event_id = $event )";
+                        . "WHERE e1.event_id = $event ) LIMIT 9";
                 $relatedresult = db_select($relatedquery);
                 while ($rowrel = mysqli_fetch_assoc($relatedresult)) {
                     //do not show the current event
@@ -221,7 +226,6 @@ if (isset($_SESSION['valid_user'])) {
             </td>
         </tr>
     </table>
-    <!-- Comments -->
     <table>
         <tr id="commentsection">
         <h2>Comments</h2>
@@ -232,8 +236,13 @@ if (isset($_SESSION['valid_user'])) {
         </tr>
         <tr>
             <td>
-                <textarea id="newcomment" rows="4" cols="50"></textarea><br>
-                <button id="submitcomment">Submit Comment</button>
+                <?php if (isset($_SESSION['valid_user'])) { ?>
+                    <textarea id="newcomment" rows="4" cols="50"></textarea><br>
+                    <button id="submitcomment">Submit Comment</button>
+                <?php } else { ?>
+                    <h3>Please log in to submit a comment.</h3>
+                <?php } ?>
+
             </td>
         </tr>
     </table>
