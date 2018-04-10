@@ -43,9 +43,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
                     rating = $('input[name=rating]:checked').val();
                     updateRating();
                 });
-                
+
                 //when comment is submitted, insert the comment
-                $('#submitcomment').click(function(){
+                $('#submitcomment').click(function () {
                     comment = $('#newcomment').val();
                     showComments();
                 });
@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             //Using associative array from result, populate table columns with corresponding information.
             $array = mysqli_fetch_assoc($result);
             ?>
-            <h1><?= $array["event_title"] //Heading of page. ?></h1> 
+            <h1><?= $array["event_title"] //Heading of page.    ?></h1> 
 
             <div class='eventImg'>
                 <?php
