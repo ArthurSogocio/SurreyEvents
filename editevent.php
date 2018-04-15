@@ -4,6 +4,13 @@ require_once("includes/db_connection.php");
 
 //Uses value in URL to load correct event information from database.
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    //check if user is signed in, and if they are admin
+    if(isset($_SESSION['admin']) && isset($_SESSION['valid_user'])) {
+        //check database to double check if user is actually an admin
+        $adminquery = "SELECT is_admin FROM members WHERE user_id = " . $_SESSION['valid_user'];
+        $adminresult = db_select($adminquery);
+        
+    }
     if (!empty($_GET['event_id'])) {
         //Query to get event information.
 

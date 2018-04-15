@@ -104,6 +104,9 @@ span.rating {
 .bookmark-button {
 	background-color: green;
 }
+.edit-button {
+    background-color: orange;
+}
 .dead-button {
 	background-color: gray;
 }

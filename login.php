@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //If no issues were detected from the input fields, attempt to log the user in.
     if (!isset($error)) {
         //Query to get the user's information using the input email.
-        $query = "SELECT user_id, username, password_hash FROM members WHERE email = '$email'";
+        $query = "SELECT user_id, username, password_hash, is_admin FROM members WHERE email = '$email'";
         $result = db_select($query);
         //If no emails have the typed value, return credential error
         if (mysqli_num_rows($result) > 0) {
@@ -36,11 +36,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     //set sessions for logged in user: user name and user id
                     $_SESSION['valid_user'] = $row['user_id'];
                     $_SESSION['valid_username'] = $row['username'];
+                    //if the user is an admin, set the admin in the session
+                    if ($row['is_admin'] == 1) {
+                        $_SESSION['admin'] = 1;
+                    }
                     if (isset($_SESSION['callback_url'])) { //If logging in after attempting to access or add to bookmarks, redirect using http and the callback_url stored in the session. Unsets after setting url variable for the header statement to use.
                         $url = "http://" . $_SERVER['SERVER_NAME'] . $_SESSION['callback_url'];
                         unset($_SESSION['callback_url']);
                         header('Location: ' . $url);
-                        ;
+                        
                     } else { //If no callback_url exists, redirect the user to the homepage.
                         header('Location: index.php');
                     }
