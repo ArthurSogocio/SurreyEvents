@@ -5,6 +5,7 @@ require_once("includes/db_connection.php");
 //Uses value in URL to load correct event information from database.
 if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST") {
 //check if user is signed in, and if they are admin
+                $errors = '';
     if (isset($_SESSION['valid_user'])) {
         //if the user previously submitted this form, then update the data with the given fields
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -15,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
             $password = trim(htmlspecialchars($_POST['password']));
             $new_password = trim(htmlspecialchars($_POST['new_password']));
             $confirm_password = trim(htmlspecialchars($_POST['confirm_password']));
-            $errors = '';
+
 
             //check if password matches user
             $passcheckquery = "SELECT password_hash FROM members WHERE user_id=" . $_SESSION['valid_user'] . " LIMIT 1";
