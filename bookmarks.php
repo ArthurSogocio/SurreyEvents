@@ -28,20 +28,15 @@ if (isset($_GET["user"])) {
         //Adds the header.
         require('includes/header.php');
         ?>
-        <h1>
-			Bookmarks for <?php
-				//Sets the page's heading with the name of user if exists.
-				echo $this_user;
-			?>
-		</h1>
+        <!-- Sets the page's heading with the name of user. -->
+        <h1>Bookmarks for <?php echo $this_user; ?></h1>
 
 		<?php
-		//Query to get all bookmark items associated with user's id and every product attached to the bookmark item.
+		//Query to get all bookmark items associated with user's id and every event attached to the bookmark item.
 		$query = "SELECT bookmarks.event_id, events.event_title, DATEDIFF(events.start_date, CURDATE()) AS days_left, members.username FROM bookmarks JOIN events ON bookmarks.event_id = events.event_id JOIN members ON bookmarks.user_id = members.user_id WHERE members.username = ?";
 
-		$db = create_db(); //TEMP
-
-		//Sets up the prepared statement again to run for product information, including the product code (for linking to modeldetails.php) and product name (for the list items).
+		//Sets up the prepared statement again to run for event information, including the event id (for linking to eventdetails.php) and event name (for the list items).
+		$db = create_db();
 		$stmt = $db->prepare($query);
 		$stmt->bind_param('s', $this_user);
 		$stmt->execute();
@@ -49,8 +44,8 @@ if (isset($_GET["user"])) {
 
 		//Displays relevant message when opening bookmark from redirect by addtobookmarks.php (which provides the "event_added" item).
 		if (isset($_SESSION['event_added'])) {
-			while ($stmt->fetch()) { //Looks for the product added, most likely at the bottom of the results if a brand new entry.
-				//Message to indicate user already has the product on their bookmarks, indicated by having a "dataExists" string concantenated at the end of the product's code.
+			while ($stmt->fetch()) { //Looks for the event added, most likely at the bottom of the results if a brand new entry.
+				//Message to indicate user already has the event on their bookmarks, indicated by having a "dataExists" string concantenated at the end of the event's code.
 				if ($_SESSION['event_added'] == $event_id . "dataExists") echo '<span style="color: #eb9437;">' . $event_title . ' is already in your bookmarks.</span><br>';
 
 				//Confirmatory message for adding a bookmark item.
@@ -79,8 +74,8 @@ if (isset($_GET["user"])) {
 			echo "<ul>";
 			//Make new list item with link for every bookmark item.
 			while ($stmt->fetch()) {
+				//Creates countdown timer for each event on list.
 	            $daysleftdisplay = '<br><span class="countdown">Starts ';
-
 	            if ($days_left == 1) {
 	                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
 	            } else if ($days_left > 0) {
@@ -90,9 +85,7 @@ if (isset($_GET["user"])) {
 	            } else {
 	                $daysleftdisplay = '<br><span>&nbsp;';
 	            }
-
 				echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
-
 			}
 			echo "</ul>";
 		}
@@ -101,15 +94,12 @@ if (isset($_GET["user"])) {
 		$stmt->close();
 		$db->close();
 		
-		?>
-
-		<?php
         //Adds the footer.
         require('includes/footer.php');
         ?>
     </body>
     <script type="text/javascript">
-    	
+    	//Toggles visibility of edit buttons.
     	$("#edit").click(function(event) {
 			event.preventDefault();
 			$(this).hide();
@@ -128,15 +118,17 @@ if (isset($_GET["user"])) {
     	$("#delete").hide();
     	$("#done").hide();
     	
+    	//Runs AJAX to delete the selected bookmarks from the database.
     	$("#delete").click(function(event) {
 			event.preventDefault();
-
 			var myUrl = $(event.target).attr("formaction");
 			var boxes = $(".bmCheck");
 			var selected = [];
 			for (var i = 0; i < boxes.length; i++) {
 				if(boxes[i].checked) selected.push(boxes[i].parentElement.attributes["id"].value);
 			}
+
+			//If user had selected at least one bookmark, ask for confirmation before executing the AJAX call.
 			if (selected.length > 0) {
 				if (confirm("Delete the selected bookmark(s)?")) {
 					$.ajax({
