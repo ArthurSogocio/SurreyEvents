@@ -104,7 +104,7 @@ if (isset($_SESSION['valid_user'])) {
                         <?php
                         if (isset($_SESSION['valid_user'])) {
                             ?>
-
+                            Enter a rating:
                             <form action="#" id="rating">
                                 <input type="radio" name="rating" value="1"> 1
                                 <input type="radio" name="rating" value="2"> 2
@@ -127,9 +127,11 @@ if (isset($_SESSION['valid_user'])) {
                 <tr>
                     <td>
                         <?php
-                        if ($_SESSION['user_admin'] == 1) {
-                            //create button to edit event if user is admin
-                            echo "<a href='editevents.php?event_id=" . $_GET['event_id'] . "' >Edit Event</a>";
+                        if (isset($_SESSION['user_admin'])) {
+                            if ($_SESSION['user_admin'] == 1) {
+                                //create button to edit event if user is admin
+                                echo "<a href='editevents.php?event_id=" . $_GET['event_id'] . "' >Edit Event</a>";
+                            }
                         }
                         ?>
                     </td>
@@ -167,9 +169,8 @@ if (isset($_SESSION['valid_user'])) {
                     <th>Town</th>
                 </tr>
                 <tr>
-
                     <td><?= $enddateformat ?></td>
-                    <td><?= $array["town"] ?></td>
+                    <td><?php if (isset($array["town"])) echo $array["town"]; else echo "N/A"; ?></td>
                 </tr>
 
             </table>
@@ -177,12 +178,12 @@ if (isset($_SESSION['valid_user'])) {
                 <tr>
                     <td>
                         <h3>Address</h3>
+                        <p>
                         <?php
-                        if ($array["address"] != "")
-                            echo "<p>" . $array["address"] . "</p>";
-                        else
-                            echo "<p>No address available.</p>";
+                        if ($array["address"] != "") echo $array["address"];
+                        else echo "No address available.";
                         ?>
+                        </p>
                         <h3>Description</h3>
                         <p><?= $array["description"] ?></p>
                     </td>

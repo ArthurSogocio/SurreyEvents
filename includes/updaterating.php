@@ -56,5 +56,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "<h3>Rating: <span class='rating'>" . round($row['rating'], 1) . '</span> (' . $row['total'] . ' votes)<br>';
         echo $userrating . '</h3>';
     }
+    if ($result->num_rows == 0) {
+        echo "<h3>Rating: N/A (0 votes)</h3>";
+    }
 }
 ?>
