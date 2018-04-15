@@ -11,7 +11,7 @@
             //Shows username and logout button if logged in.
             if (isset($_SESSION['valid_user']) && isset($_SESSION['valid_username'])) {
                 $signed_in_user = $_SESSION['valid_username'];
-                echo 'Welcome, ' . $signed_in_user . ' <a class="logout" href="logout.php">(Logout)</a>';
+                echo 'Welcome, <a class="logout" href="edituser.php">' . $signed_in_user . ' (Edit User)</a>    <a class="logout" href="logout.php">Logout</a>';
             } else {
                 echo '<a class="login" href="login.php">Login</a>';
             }
