@@ -263,7 +263,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         //Won't cause a mistaken entry because button to add to bookmarks only ever appears after this statement.
         $_SESSION['event_viewed'] = $array["event_id"];
 
-        //Frees results and closes the connection to the database.
+        //Frees result.
         $result->free_result();
     }
     

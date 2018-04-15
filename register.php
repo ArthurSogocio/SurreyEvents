@@ -43,9 +43,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         //Encrypts the password into a hashed password for the database to hold.
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        //set the db connection
-        $db = create_db();
         //Query to insert the user's entered information into a new row in the users table. Enters the hashed password, and not the original password.
+        $db = create_db();
         $query = "INSERT INTO members (username, name, email, password_hash) VALUES (?, ?, ?, ?)";
         $stmt = $db->prepare($query);
         $stmt->bind_param('ssss', $user_name, $name, $email, $hash);
@@ -70,6 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
 <html>
     <head>
         <title>Surrey Events</title>
@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </head>
     <body>
         <?php
-//Adds the header.
+        //Adds the header.
         require('includes/header.php');
         ?>
         <form action="register.php" method="post">
@@ -142,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="submit" value="Create Account">
         </form>
         <?php
-//Adds the footer.
+        //Adds the footer.
         require('includes/footer.php');
         ?>
     </body>
