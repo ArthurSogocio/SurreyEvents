@@ -4,14 +4,14 @@ require_once("includes/db_connection.php");
 
 //Uses value in URL to load correct event information from database.
 if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST") {
-//check if user is signed in, and if they are admin
+    //Check if user is signed in, and if they are admin.
     if (isset($_SESSION['admin']) && isset($_SESSION['valid_user'])) {
-//check database to double check if user is actually an admin
+        //Check database to double check if user is actually an admin.
         $adminquery = "SELECT is_admin FROM members WHERE user_id = " . $_SESSION['valid_user'] . " LIMIT 1";
         $adminresult = db_select($adminquery);
         $admin = mysqli_fetch_assoc($adminresult);
         if ($admin['is_admin'] == 1) {
-            //if the user previously submitted this form, then update the data with the given fields
+            //If the user previously submitted this form, then update the data with the given fields
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $event_title = trim(htmlspecialchars($_POST['event_title']));
                 $category_id = trim(htmlspecialchars($_POST['category_id']));
@@ -49,8 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
             }
 
             if (!empty($_GET['event_id'])) {
-//Query to get event information.
-
+                //Query to get event information.
                 $query = "SELECT * FROM events "
                         . "WHERE event_id = " . $_GET['event_id'] . " LIMIT 1";
                 $result = db_select($query);
@@ -162,7 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
                         </table>
                     </form>
                     <?php
-//Adds the footer.
+                    //Adds the footer.
                     require('includes/footer.php');
                     ?>
                 </body>
@@ -176,7 +175,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
         header("Location: index.php");
     }
 } else {
-//Kills page if no correct code for any product was provided in URL. (i.e. from direct access to page)
+    //Kills page if no correct code for any product was provided in URL. (i.e. from direct access to page)
     die("Something went wrong. Please try again later.");
 }
 ?>

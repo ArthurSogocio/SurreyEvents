@@ -71,23 +71,58 @@ if (isset($_GET["user"])) {
 				}
 			}
 
-			echo "<ul>";
-			//Make new list item with link for every bookmark item.
-			while ($stmt->fetch()) {
-				//Creates countdown timer for each event on list.
-	            $daysleftdisplay = '<br><span class="countdown">Starts ';
-	            if ($days_left == 1) {
-	                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
-	            } else if ($days_left > 0) {
-	                $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
-	            } else if ($days_left == 0) {
-	           		$daysleftdisplay .= '<span class="today">today</span>!';
-	            } else {
-	                $daysleftdisplay = '<br><span>&nbsp;';
-	            }
-				echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
+			//Query to get the sharing setting from this bookmark list's owner.
+			$sharingquery = 'SELECT sharing FROM members WHERE username = "' . $this_user . '"';
+			$sres = db_select($sharingquery);
+			$srow = mysqli_fetch_assoc($sres);
+			$sharing = $srow["sharing"];
+
+			//Show the bookmarks if sharing is set to true.
+			if ($sharing == 1) {
+				echo "<ul>";
+				//Make new list item with link for every bookmark item.
+				while ($stmt->fetch()) {
+					//Creates countdown timer for each event on list.
+		            $daysleftdisplay = '<br><span class="countdown">Starts ';
+		            if ($days_left == 1) {
+		                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
+		            } else if ($days_left > 0) {
+		                $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
+		            } else if ($days_left == 0) {
+		           		$daysleftdisplay .= '<span class="today">today</span>!';
+		            } else {
+		                $daysleftdisplay = '<br><span>&nbsp;';
+		            }
+					echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
+				}
+				echo "</ul>";
+			} else { //If the bookmarks are being kept private...
+				if (isset($_SESSION['valid_username'])) { //User is logged in.
+					if ($this_user == $_SESSION['valid_username']) { //If the user is just accessing their own bookmarks...
+						echo "<ul>";
+						//Make new list item with link for every bookmark item.
+						while ($stmt->fetch()) {
+							//Creates countdown timer for each event on list.
+				            $daysleftdisplay = '<br><span class="countdown">Starts ';
+				            if ($days_left == 1) {
+				                $daysleftdisplay .= '<span class="today">tomorrow</span>!';
+				            } else if ($days_left > 0) {
+				                $daysleftdisplay .= 'in <span class="days">' . $days_left . "</span> days";
+				            } else if ($days_left == 0) {
+				           		$daysleftdisplay .= '<span class="today">today</span>!';
+				            } else {
+				                $daysleftdisplay = '<br><span>&nbsp;';
+				            }
+							echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
+						}
+						echo "</ul>";
+					} else { //If this is not the user's own bookmarks...
+						echo "Access to this list is private to the user.";
+					}
+				} else { //User isn't logged in.
+					echo "Access to this list is private to the user.";
+				}
 			}
-			echo "</ul>";
 		}
 
 		//Frees results and closes the connection to the database.

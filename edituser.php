@@ -4,9 +4,9 @@ require_once("includes/db_connection.php");
 
 //Uses value in URL to load correct event information from database.
 if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST") {
-//check if user is signed in, and if they are admin
+    //Check if user is signed in, and if they are admin.
     if (isset($_SESSION['valid_user'])) {
-        //if the user previously submitted this form, then update the data with the given fields
+        //If the user previously submitted this form, then update the data with the given fields.
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $username = trim(htmlspecialchars($_POST['username']));
             $name = trim(htmlspecialchars($_POST['name']));
@@ -17,27 +17,26 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
             $confirm_password = trim(htmlspecialchars($_POST['confirm_password']));
             $errors = '';
 
-            //check if password matches user
+            //Check if password matches user.
             $passcheckquery = "SELECT password_hash FROM members WHERE user_id=" . $_SESSION['valid_user'] . " LIMIT 1";
             $passcheckresult = db_select($passcheckquery);
             $passcheckrow = mysqli_fetch_assoc($passcheckresult);
             if (password_verify($password, $passcheckrow['password_hash'])) {
 
-                //set the db connection
+                //Set the db connection.
                 $db = create_db();
-                //set the initial query
+                //Set the initial query.
                 $query = "UPDATE members SET "
                         . "username = ?, "
                         . "name = ?, "
                         . "email = ?, "
                         . "sharing = ? "
                         . " WHERE user_id = " . $_SESSION['valid_user'];
-                //echo $query;
                 $stmt = $db->prepare($query);
                 $stmt->bind_param('ssss', $username, $name, $email, $sharing);
                 $stmt->execute();
 
-                //add password field if new password is added, new update query
+                //Add password field if new password is added, new update query.
                 if ($new_password != '') {
                     if ($new_password == $confirm_password) {
                         $new_hash = password_hash($new_password, PASSWORD_DEFAULT);
@@ -45,28 +44,27 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
                         $query = "UPDATE members SET "
                                 . "password_hash = ? "
                                 . " WHERE user_id = " . $_SESSION['valid_user'];
-                        //echo $query;
                         $stmt = $db->prepare($query);
                         $stmt->bind_param('s', $new_hash);
                         $stmt->execute();
                     } else {
-                        $errors .= "<h2>Error: New Password does not match; Password has not been updated</h2>";
+                        $errors .= "Error: New Password does not match; Password has not been updated";
                     }
                 }
 
-                //set field to let users know if the submit was a success
+                //Set field to let users know if the submit was a success.
                 $edited = 1;
 
                 //Frees results and closes the connection to the database.
                 $stmt->close();
                 $db->close();
             } else {
-                //give error if current password does not match
-                $errors .= "<h2>Error: Current Password does not match</h2>";
+                //Give error if current password does not match.
+                $errors .= "Error: Current Password does not match";
             }
         }
 
-//Query to get user information.
+        //Query to get user information.
         $query = "SELECT username, name, email, sharing FROM members "
                 . "WHERE user_id = " . $_SESSION['valid_user'] . " LIMIT 1";
         $result = db_select($query);
@@ -83,16 +81,13 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
             <?php
             //Adds the header.
             require('includes/header.php');
-            //create form to resubmit to this page; edit all of the event's fields
+            //Create form to resubmit to this page; edit all of the user's fields.
             ?>
             <h1>Edit User Details</h1>
             <?php
-            if (isset($edited)) {
-                echo "<h2>Success! This event has been edited.</h2>";
-            }
-            if ($errors != "") {
-                echo $errors;
-            }
+            if (isset($edited)) echo "<span style='color: #479b61;'>Success! Your account has been updated.</span>";
+            if (isset($errors)) echo "<span style='color: #eb9437;'>" . $errors . "</span>";
+            
             ?>
             <form action="<?= $_SERVER['PHP_SELF'] ?>" method='POST'>
                 <table width ='100%'>
@@ -113,13 +108,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
                         <td>
                             <select name='sharing'>
                                 <option value='1' <?php
-        if ($userdetails['sharing'] == 1)
-            echo 'selected';
-            ?>>Yes</option>
+                                if ($userdetails['sharing'] == 1) echo 'selected';
+                                ?>>Yes</option>
                                 <option value='0' <?php
-                            if ($userdetails['sharing'] == 0)
-                                echo 'selected';
-            ?>>No</option>
+                                if ($userdetails['sharing'] == 0) echo 'selected';
+                                ?>>No</option>
                             </select>
                         </td>
                     <tr>
@@ -147,7 +140,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" || $_SERVER["REQUEST_METHOD"] == "POST")
                 </table>
             </form>
             <?php
-//Adds the footer.
+            //Adds the footer.
             require('includes/footer.php');
             ?>
         </body>

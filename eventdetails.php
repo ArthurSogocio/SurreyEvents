@@ -30,12 +30,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
             comment = "";
             event = <?= $_GET['event_id'] ?>;
             user = <?php
-//If valid user is set, change user variable.
-if (isset($_SESSION['valid_user']))
-    echo $_SESSION['valid_user'];
-else
-    echo '0';
-?>;
+            //If valid user is set, change user variable.
+            if (isset($_SESSION['valid_user']))
+                echo $_SESSION['valid_user'];
+            else
+                echo '0';
+            ?>;
 
             $(function () {
                 //When rating radio button is clicked, update rating.
