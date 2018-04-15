@@ -93,7 +93,7 @@ if (isset($_GET["user"])) {
 		            } else {
 		                $daysleftdisplay = '<br><span>&nbsp;';
 		            }
-					echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
+					echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id='.$event_id.'>'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
 				}
 				echo "</ul>";
 			} else { //If the bookmarks are being kept private...
@@ -113,7 +113,7 @@ if (isset($_GET["user"])) {
 				            } else {
 				                $daysleftdisplay = '<br><span>&nbsp;';
 				            }
-							echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id="'.$event_id.'">'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
+							echo '<li id="'.$event_id.'"><input type="checkbox" class="bmCheck"><a href=eventdetails.php?event_id='.$event_id.'>'.$event_title.'</a> ' . $daysleftdisplay . '</span></li>';
 						}
 						echo "</ul>";
 					} else { //If this is not the user's own bookmarks...
