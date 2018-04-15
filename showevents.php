@@ -8,11 +8,11 @@ if (isset($_SERVER["HTTPS"])) {
 //Initializing connection to MySQL database. Includes credentials and creates database connection in db_connection.php, all outside of root document. Also contains the session_start().
 require_once("includes/db_connection.php");
 
-//query to select categories from dropdown
+//Query to select categories from dropdown.
 $catquery = "SELECT id, name FROM categories";
 $catresult = db_select($catquery);
 
-//query to select towns from dropdown
+//Query to select towns from dropdown.
 $townquery = "SELECT id, name FROM towns";
 $townresult = db_select($townquery);
 
@@ -28,24 +28,23 @@ if (!isset($_SESSION['valid_user'])) {
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <script src="js/jquery-3.3.1.js"></script>
         <script>
-            //initialize category; start at 0 or "" means select all
+            //Initializes search criteria. 0 or "" means "Select All".
             name = "";
             category = 0;
             town = "";
             recency = 0;
+
             $(function () {
-                //Ajax File to apply user filters to the table query - change applied to query; 
+                //AJAX function to apply/change user filters to the table query.
                 function updateTable() {
                     $.post("includes/filterresults.php", {name: name, category: category, town: town, recency: recency}, function (result) {
                         $("#filterresults").html(result);
-                        $("#pagination-nav").empty();
 
+                        //Updates pagination views and controls.
+                        $("#pagination-nav").empty();
                         pages = $("#lastrow").attr("data-index");
-                        console.log(pages);
                         for (var i = 0; i < pages; i++) {
                             $("#pagination-nav").append("<li><a href='#' data-index='"+(i+1)+"' class='link'>["+(i+1)+"]</a></li>");
-                            // classLink = ".link" + (i+1);
-                            // console.log(classLink); 
                         }
                         $(".link").click(function () {
                             $(".page").hide();
@@ -58,31 +57,25 @@ if (!isset($_SESSION['valid_user'])) {
                     });
                 }
 
-                //filter based on which filter was changed
+                //Filter based on which option was changed.
                 $("#name").bind('input', function () {
                     name = this.value;
-                    //console.log(name);
                     updateTable();
                 });
                 $("#category").on('change', function () {
                     category = this.value;
-                    //console.log(category);
                     updateTable();
                 });
                 $("#town").on('change', function () {
                     town = this.value;
-                    //console.log(town);
                     updateTable();
                 });
                 $("#recency").on('change', function () {
                     recency = this.value;
-                    //console.log(recency);
                     updateTable();
                 });
 
-                
-
-                //run function on page load to show unfiltered results
+                //Run function on page load to show unfiltered results.
                 updateTable();
             });
         </script>
@@ -109,6 +102,7 @@ if (!isset($_SESSION['valid_user'])) {
                         <select id="category">
                             <option value="">Select a Category</option>
                             <?php
+                            //Creates dropdown options.
                             while ($catrow = mysqli_fetch_assoc($catresult)) {
                                 $catid = $catrow['id'];
                                 $catname = $catrow['name'];
@@ -124,6 +118,7 @@ if (!isset($_SESSION['valid_user'])) {
                             <option value="">Select a Town</option>
                             <option value="0">N/A</option>
                             <?php
+                            //Creates dropdown options.
                             while ($townrow = mysqli_fetch_assoc($townresult)) {
                                 $townid = $townrow['id'];
                                 $townname = $townrow['name'];
@@ -144,10 +139,10 @@ if (!isset($_SESSION['valid_user'])) {
             </table>
         </form>
         <ul id="pagination-nav">
-            <!-- Nav buttons added after AJAX result. -->
+            <!-- Nav buttons for pagination added after AJAX result. -->
         </ul>
         <div id="filterresults">
-            <!-- display filtered results from ajax -->
+            <!-- Display filtered results from AJAX. -->
         </div>
         <?php
         //Adds the footer.
